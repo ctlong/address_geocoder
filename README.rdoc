@@ -1,0 +1,33 @@
+== AddressGeocoder
+
+AddressGeocoder is a gem allowing you to validate and geocode addresses. All validations are done using Google's Geocoding API.
+Currently it can validate that the inputted address exists and return a formatted version.
+
+== Information
+
+=== Bug reporting
+
+If you discover a problem with our gem, please let us know about it:
+https://github.com/ctlong/address_geocoder/issues
+
+== Getting started
+
+AddressGeocoder was written and tested on Rails >= 4.2.5. You can install it by adding in to your Gemfile with:
+
+  gem 'address_geocoder'
+
+Run the bundle command to install it.
+
+=== Basic usage
+
+Not activated yet :)
+
+=== How it works
+
+Gem sends addresses in varying formats to the Google Geocoding API until it receives a positive result.
+Then parses address into its seperate parts and returns either formatted version or lat/long.
+
+=== Development and tests
+
+We are open to suggestions and improvements.
+Just don't forget to write tests before the pull request.
