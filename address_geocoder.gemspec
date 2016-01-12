@@ -7,5 +7,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Carson Long", "Wing Leung Choi"]
   s.email       = ["ctlong.970@gmail.com", "wingleung@goeasyship.com"]
   s.homepage    = ""
-  s.files       = ["lib/address_geocoder.rb", "lib/address_geocoder/validation.rb", "lib/address_geocoder/yaml/countries.yaml"]
+  s.files       = ["lib/address_geocoder.rb", "lib/address_geocoder/countries.yaml"]
+
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'httparty'
 end
