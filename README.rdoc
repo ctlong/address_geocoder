@@ -1,5 +1,7 @@
 == AddressGeocoder
 
+{<img src="https://codeclimate.com/github/ctlong/address_geocoder/badges/gpa.svg" />}[https://codeclimate.com/github/ctlong/address_geocoder]
+
 AddressGeocoder is a gem allowing you to validate and geocode addresses. All validations are done using Google's Geocoding API.
 Currently it can validate that the inputted address exists and return a formatted version.
 
