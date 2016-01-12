@@ -20,4 +20,26 @@ describe AddressGeocoder do
       expect{test.refined_address}.to raise_error
     end
   end
+
+  describe "#valid_address?" do
+    context "when address can be not recogized" do
+      it "returns false"
+      it "adds errors message in an instance of address_geocoder"
+    end
+
+    context "when address can be recogized" do
+      it "returns true"
+    end
+  end
+
+  describe "#suggested_address" do
+    context "when address can be not recogized" do
+      it "returns nil"
+      it "adds errors message in an instance of address_geocoder"
+    end
+
+    context "when address can be recogized" do
+      it "returns a hash with keys: country state city postal_code street"
+    end
+  end
 end
