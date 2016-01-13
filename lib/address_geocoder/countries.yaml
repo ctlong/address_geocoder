@@ -5,999 +5,1249 @@ countries:
       country_name: Andorra
       alpha2: AD
       alpha3: AND
+      postal_code: true
     -
       country_name: United Arab Emirates
       alpha2: AE
       alpha3: ARE
+      postal_code: false
     -
       country_name: Afghanistan
       alpha2: AF
       alpha3: AFG
+      postal_code: true
     -
       country_name: Antigua and Barbuda
       alpha2: AG
       alpha3: ATG
+      postal_code: false
     -
       country_name: Anguilla
       alpha2: AI
       alpha3: AIA
+      postal_code: true
     -
       country_name: Albania
       alpha2: AL
       alpha3: ALB
+      postal_code: true
     -
       country_name: Armenia
       alpha2: AM
       alpha3: ARM
+      postal_code: true
     -
       country_name: Angola
       alpha2: AO
       alpha3: AGO
+      postal_code: false
     -
       country_name: Antarctica
       alpha2: AQ
       alpha3: ATA
+      postal_code: true
     -
       country_name: Argentina
       alpha2: AR
       alpha3: ARG
+      postal_code: true
     -
       country_name: American Samoa
       alpha2: AS
       alpha3: ASM
+      postal_code: true
     -
       country_name: Austria
       alpha2: AT
       alpha3: AUT
+      postal_code: true
     -
       country_name: Australia
       alpha2: AU
       alpha3: AUS
+      postal_code: true
     -
       country_name: Aruba
       alpha2: AW
       alpha3: ABW
+      postal_code: false
     -
       country_name: Åland
       alpha2: AX
       alpha3: ALA
+      postal_code: true
     -
       country_name: Azerbaijan
       alpha2: AZ
       alpha3: AZE
+      postal_code: true
     -
       country_name: Bosnia and Herzegovina
       alpha2: BA
       alpha3: BIH
+      postal_code: true
     -
       country_name: Barbados
       alpha2: BB
       alpha3: BRB
+      postal_code: true
     -
       country_name: Bangladesh
       alpha2: BD
       alpha3: BGD
+      postal_code: true
     -
       country_name: Belgium
       alpha2: BE
       alpha3: BEL
+      postal_code: true
     -
       country_name: Burkina Faso
       alpha2: BF
       alpha3: BFA
+      postal_code: false
     -
       country_name: Bulgaria
       alpha2: BG
       alpha3: BGR
+      postal_code: true
     -
       country_name: Bahrain
       alpha2: BH
       alpha3: BHR
+      postal_code: true
     -
       country_name: Burundi
       alpha2: BI
       alpha3: BDI
+      postal_code: false
     -
       country_name: Benin
       alpha2: BJ
       alpha3: BEN
+      postal_code: false
     -
       country_name: Saint Barthélemy
       alpha2: BL
       alpha3: BLM
+      postal_code: true
     -
       country_name: Bermuda
       alpha2: BM
       alpha3: BMU
+      postal_code: true
     -
       country_name: Brunei
       alpha2: BN
       alpha3: BRN
+      postal_code: true
     -
       country_name: Bolivia
       alpha2: BO
       alpha3: BOL
+      postal_code: true
     -
       country_name: Bonaire
       alpha2: BQ
       alpha3: BES
+      postal_code: true
     -
       country_name: Brazil
       alpha2: BR
       alpha3: BRA
+      postal_code: true
     -
       country_name: Bahamas
       alpha2: BS
       alpha3: BHS
+      postal_code: false
     -
       country_name: Bhutan
       alpha2: BT
       alpha3: BTN
+      postal_code: true
     -
       country_name: Bouvet Island
       alpha2: BV
       alpha3: BVT
+      postal_code: true
     -
       country_name: Botswana
       alpha2: BW
       alpha3: BWA
+      postal_code: false
     -
       country_name: Belarus
       alpha2: BY
       alpha3: BLR
+      postal_code: true
     -
       country_name: Belize
       alpha2: BZ
       alpha3: BLZ
+      postal_code: false
     -
       country_name: Canada
       alpha2: CA
       alpha3: CAN
+      postal_code: true
     -
       country_name: Cocos [Keeling] Islands
       alpha2: CC
       alpha3: CCK
+      postal_code: true
     -
       country_name: Democratic Republic of the Congo
       alpha2: CD
       alpha3: COD
+      postal_code: false
     -
       country_name: Central African Republic
       alpha2: CF
       alpha3: CAF
+      postal_code: false
     -
       country_name: Republic of the Congo
       alpha2: CG
       alpha3: COG
+      postal_code: false
     -
       country_name: Switzerland
       alpha2: CH
       alpha3: CHE
+      postal_code: true
     -
       country_name: Ivory Coast
       alpha2: CI
       alpha3: CIV
+      postal_code: false
     -
       country_name: Cook Islands
       alpha2: CK
       alpha3: COK
+      postal_code: false
     -
       country_name: Chile
       alpha2: CL
       alpha3: CHL
+      postal_code: true
     -
       country_name: Cameroon
       alpha2: CM
       alpha3: CMR
+      postal_code: false
     -
       country_name: China
       alpha2: CN
       alpha3: CHN
+      postal_code: true
     -
       country_name: Colombia
       alpha2: CO
       alpha3: COL
+      postal_code: true
     -
       country_name: Costa Rica
       alpha2: CR
       alpha3: CRI
+      postal_code: true
     -
       country_name: Cuba
       alpha2: CU
       alpha3: CUB
+      postal_code: true
     -
       country_name: Cape Verde
       alpha2: CV
       alpha3: CPV
+      postal_code: true
     -
       country_name: Curacao
       alpha2: CW
       alpha3: CUW
+      postal_code: true
     -
       country_name: Christmas Island
       alpha2: CX
       alpha3: CXR
+      postal_code: true
     -
       country_name: Cyprus
       alpha2: CY
       alpha3: CYP
+      postal_code: true
     -
       country_name: Czech Republic
       alpha2: CZ
       alpha3: CZE
+      postal_code: true
     -
       country_name: Germany
       alpha2: DE
       alpha3: DEU
+      postal_code: true
     -
       country_name: Djibouti
       alpha2: DJ
       alpha3: DJI
+      postal_code: false
     -
       country_name: Denmark
       alpha2: DK
       alpha3: DNK
+      postal_code: true
     -
       country_name: Dominica
       alpha2: DM
       alpha3: DMA
+      postal_code: false
     -
       country_name: Dominican Republic
       alpha2: DO
       alpha3: DOM
+      postal_code: true
     -
       country_name: Algeria
       alpha2: DZ
       alpha3: DZA
+      postal_code: true
     -
       country_name: Ecuador
       alpha2: EC
       alpha3: ECU
+      postal_code: true
     -
       country_name: Estonia
       alpha2: EE
       alpha3: EST
+      postal_code: true
     -
       country_name: Egypt
       alpha2: EG
       alpha3: EGY
+      postal_code: true
     -
       country_name: Western Sahara
       alpha2: EH
       alpha3: ESH
+      postal_code: true
     -
       country_name: Eritrea
       alpha2: ER
       alpha3: ERI
+      postal_code: false
     -
       country_name: Spain
       alpha2: ES
       alpha3: ESP
+      postal_code: true
     -
       country_name: Ethiopia
       alpha2: ET
       alpha3: ETH
+      postal_code: true
     -
       country_name: Finland
       alpha2: FI
       alpha3: FIN
+      postal_code: true
     -
       country_name: Fiji
       alpha2: FJ
       alpha3: FJI
+      postal_code: false
     -
       country_name: Falkland Islands
       alpha2: FK
       alpha3: FLK
+      postal_code: true
     -
       country_name: Micronesia
       alpha2: FM
       alpha3: FSM
+      postal_code: true
     -
       country_name: Faroe Islands
       alpha2: FO
       alpha3: FRO
+      postal_code: true
     -
       country_name: France
       alpha2: FR
       alpha3: FRA
+      postal_code: true
     -
       country_name: Gabon
       alpha2: GA
       alpha3: GAB
+      postal_code: true
     -
       country_name: United Kingdom
       alpha2: GB
       alpha3: GBR
+      postal_code: true
     -
       country_name: Grenada
       alpha2: GD
       alpha3: GRD
+      postal_code: false
     -
       country_name: Georgia
       alpha2: GE
       alpha3: GEO
+      postal_code: true
     -
       country_name: French Guiana
       alpha2: GF
       alpha3: GUF
+      postal_code: true
     -
       country_name: Guernsey
       alpha2: GG
       alpha3: GGY
+      postal_code: true
     -
       country_name: Ghana
       alpha2: GH
       alpha3: GHA
+      postal_code: false
     -
       country_name: Gibraltar
       alpha2: GI
       alpha3: GIB
+      postal_code: true
     -
       country_name: Greenland
       alpha2: GL
       alpha3: GRL
+      postal_code: true
     -
       country_name: Gambia
       alpha2: GM
       alpha3: GMB
+      postal_code: false
     -
       country_name: Guinea
       alpha2: GN
       alpha3: GIN
+      postal_code: false
     -
       country_name: Guadeloupe
       alpha2: GP
       alpha3: GLP
+      postal_code: true
     -
       country_name: Equatorial Guinea
       alpha2: GQ
       alpha3: GNQ
+      postal_code: false
     -
       country_name: Greece
       alpha2: GR
       alpha3: GRC
+      postal_code: true
     -
       country_name: South Georgia and the South Sandwich Islands
       alpha2: GS
       alpha3: SGS
+      postal_code: true
     -
       country_name: Guatemala
       alpha2: GT
       alpha3: GTM
+      postal_code: true
     -
       country_name: Guam
       alpha2: GU
       alpha3: GUM
+      postal_code: true
     -
       country_name: Guinea-Bissau
       alpha2: GW
       alpha3: GNB
+      postal_code: true
     -
       country_name: Guyana
       alpha2: GY
       alpha3: GUY
+      postal_code: false
     -
       country_name: Hong Kong
       alpha2: HK
       alpha3: HKG
+      postal_code: false
     -
       country_name: Heard Island and McDonald Islands
       alpha2: HM
       alpha3: HMD
+      postal_code: true
     -
       country_name: Honduras
       alpha2: HN
       alpha3: HND
+      postal_code: true
     -
       country_name: Croatia
       alpha2: HR
       alpha3: HRV
+      postal_code: true
     -
       country_name: Haiti
       alpha2: HT
       alpha3: HTI
+      postal_code: true
     -
       country_name: Hungary
       alpha2: HU
       alpha3: HUN
+      postal_code: true
     -
       country_name: Indonesia
       alpha2: ID
       alpha3: IDN
+      postal_code: true
     -
       country_name: Ireland
       alpha2: IE
       alpha3: IRL
+      postal_code: false
     -
       country_name: Israel
       alpha2: IL
       alpha3: ISR
+      postal_code: true
     -
       country_name: Isle of Man
       alpha2: IM
       alpha3: IMN
+      postal_code: true
     -
       country_name: India
       alpha2: IN
       alpha3: IND
+      postal_code: true
     -
       country_name: British Indian Ocean Territory
       alpha2: IO
       alpha3: IOT
+      postal_code: true
     -
       country_name: Iraq
       alpha2: IQ
       alpha3: IRQ
+      postal_code: true
     -
       country_name: Iran
       alpha2: IR
       alpha3: IRN
+      postal_code: true
     -
       country_name: Iceland
       alpha2: IS
       alpha3: ISL
+      postal_code: true
     -
       country_name: Italy
       alpha2: IT
       alpha3: ITA
+      postal_code: true
     -
       country_name: Jersey
       alpha2: JE
       alpha3: JEY
+      postal_code: true
     -
       country_name: Jamaica
       alpha2: JM
       alpha3: JAM
+      postal_code: false
     -
       country_name: Jordan
       alpha2: JO
       alpha3: JOR
+      postal_code: true
     -
       country_name: Japan
       alpha2: JP
       alpha3: JPN
+      postal_code: true
     -
       country_name: Kenya
       alpha2: KE
       alpha3: KEN
+      postal_code: false
     -
       country_name: Kyrgyzstan
       alpha2: KG
       alpha3: KGZ
+      postal_code: true
     -
       country_name: Cambodia
       alpha2: KH
       alpha3: KHM
+      postal_code: true
     -
       country_name: Kiribati
       alpha2: KI
       alpha3: KIR
+      postal_code: false
     -
       country_name: Comoros
       alpha2: KM
       alpha3: COM
+      postal_code: false
     -
       country_name: Saint Kitts and Nevis
       alpha2: KN
       alpha3: KNA
+      postal_code: false
     -
       country_name: North Korea
       alpha2: KP
       alpha3: PRK
+      postal_code: false
     -
       country_name: South Korea
       alpha2: KR
       alpha3: KOR
+      postal_code: true
     -
       country_name: Kuwait
       alpha2: KW
       alpha3: KWT
+      postal_code: true
     -
       country_name: Cayman Islands
       alpha2: KY
       alpha3: CYM
+      postal_code: true
     -
       country_name: Kazakhstan
       alpha2: KZ
       alpha3: KAZ
+      postal_code: true
     -
       country_name: Laos
       alpha2: LA
       alpha3: LAO
+      postal_code: true
     -
       country_name: Lebanon
       alpha2: LB
       alpha3: LBN
+      postal_code: true
     -
       country_name: Saint Lucia
       alpha2: LC
       alpha3: LCA
+      postal_code: false
     -
       country_name: Liechtenstein
       alpha2: LI
       alpha3: LIE
+      postal_code: true
     -
       country_name: Sri Lanka
       alpha2: LK
       alpha3: LKA
+      postal_code: true
     -
       country_name: Liberia
       alpha2: LR
       alpha3: LBR
+      postal_code: true
     -
       country_name: Lesotho
       alpha2: LS
       alpha3: LSO
+      postal_code: true
     -
       country_name: Lithuania
       alpha2: LT
       alpha3: LTU
+      postal_code: true
     -
       country_name: Luxembourg
       alpha2: LU
       alpha3: LUX
+      postal_code: true
     -
       country_name: Latvia
       alpha2: LV
       alpha3: LVA
+      postal_code: true
     -
       country_name: Libya
       alpha2: LY
       alpha3: LBY
+      postal_code: true
     -
       country_name: Morocco
       alpha2: MA
       alpha3: MAR
+      postal_code: true
     -
       country_name: Monaco
       alpha2: MC
       alpha3: MCO
+      postal_code: true
     -
       country_name: Moldova
       alpha2: MD
       alpha3: MDA
+      postal_code: true
     -
       country_name: Montenegro
       alpha2: ME
       alpha3: MNE
+      postal_code: true
     -
       country_name: Saint Martin
       alpha2: MF
       alpha3: MAF
+      postal_code: true
     -
       country_name: Madagascar
       alpha2: MG
       alpha3: MDG
+      postal_code: true
     -
       country_name: Marshall Islands
       alpha2: MH
       alpha3: MHL
+      postal_code: true
     -
       country_name: Macedonia
       alpha2: MK
       alpha3: MKD
+      postal_code: true
     -
       country_name: Mali
       alpha2: ML
       alpha3: MLI
+      postal_code: false
     -
       country_name: Myanmar [Burma]
       alpha2: MM
       alpha3: MMR
+      postal_code: true
     -
       country_name: Mongolia
       alpha2: MN
       alpha3: MNG
+      postal_code: true
     -
       country_name: Macao
       alpha2: MO
       alpha3: MAC
+      postal_code: false
     -
       country_name: Northern Mariana Islands
       alpha2: MP
       alpha3: MNP
+      postal_code: true
     -
       country_name: Martinique
       alpha2: MQ
       alpha3: MTQ
+      postal_code: true
     -
       country_name: Mauritania
       alpha2: MR
       alpha3: MRT
+      postal_code: false
     -
       country_name: Montserrat
       alpha2: MS
       alpha3: MSR
+      postal_code: false
     -
       country_name: Malta
       alpha2: MT
       alpha3: MLT
+      postal_code: true
     -
       country_name: Mauritius
       alpha2: MU
       alpha3: MUS
+      postal_code: false
     -
       country_name: Maldives
       alpha2: MV
       alpha3: MDV
+      postal_code: true
     -
       country_name: Malawi
       alpha2: MW
       alpha3: MWI
+      postal_code: false
     -
       country_name: Mexico
       alpha2: MX
       alpha3: MEX
+      postal_code: true
     -
       country_name: Malaysia
       alpha2: MY
       alpha3: MYS
+      postal_code: true
     -
       country_name: Mozambique
       alpha2: MZ
       alpha3: MOZ
+      postal_code: true
     -
       country_name: Namibia
       alpha2: NA
       alpha3: NAM
+      postal_code: true
     -
       country_name: New Caledonia
       alpha2: NC
       alpha3: NCL
+      postal_code: true
     -
       country_name: Niger
       alpha2: NE
       alpha3: NER
+      postal_code: true
     -
       country_name: Norfolk Island
       alpha2: NF
       alpha3: NFK
+      postal_code: true
     -
       country_name: Nigeria
       alpha2: NG
       alpha3: NGA
+      postal_code: true
     -
       country_name: Nicaragua
       alpha2: NI
       alpha3: NIC
+      postal_code: true
     -
       country_name: Netherlands
       alpha2: NL
       alpha3: NLD
+      postal_code: true
     -
       country_name: Norway
       alpha2: NO
       alpha3: NOR
+      postal_code: true
     -
       country_name: Nepal
       alpha2: NP
       alpha3: NPL
+      postal_code: true
     -
       country_name: Nauru
       alpha2: NR
       alpha3: NRU
+      postal_code: false
     -
       country_name: Niue
       alpha2: NU
       alpha3: NIU
+      postal_code: false
     -
       country_name: New Zealand
       alpha2: NZ
       alpha3: NZL
+      postal_code: true
     -
       country_name: Oman
       alpha2: OM
       alpha3: OMN
+      postal_code: true
     -
       country_name: Panama
       alpha2: PA
       alpha3: PAN
+      postal_code: false
     -
       country_name: Peru
       alpha2: PE
       alpha3: PER
+      postal_code: true
     -
       country_name: French Polynesia
       alpha2: PF
       alpha3: PYF
+      postal_code: true
     -
       country_name: Papua New Guinea
       alpha2: PG
       alpha3: PNG
+      postal_code: true
     -
       country_name: Philippines
       alpha2: PH
       alpha3: PHL
+      postal_code: true
     -
       country_name: Pakistan
       alpha2: PK
       alpha3: PAK
+      postal_code: true
     -
       country_name: Poland
       alpha2: PL
       alpha3: POL
+      postal_code: true
     -
       country_name: Saint Pierre and Miquelon
       alpha2: PM
       alpha3: SPM
+      postal_code: true
     -
       country_name: Pitcairn Islands
       alpha2: PN
       alpha3: PCN
+      postal_code: true
     -
       country_name: Puerto Rico
       alpha2: PR
       alpha3: PRI
+      postal_code: true
     -
       country_name: Palestine
       alpha2: PS
       alpha3: PSE
+      postal_code: true
     -
       country_name: Portugal
       alpha2: PT
       alpha3: PRT
+      postal_code: true
     -
       country_name: Palau
       alpha2: PW
       alpha3: PLW
+      postal_code: true
     -
       country_name: Paraguay
       alpha2: PY
       alpha3: PRY
+      postal_code: true
     -
       country_name: Qatar
       alpha2: QA
       alpha3: QAT
+      postal_code: false
     -
       country_name: Réunion
       alpha2: RE
       alpha3: REU
+      postal_code: true
     -
       country_name: Romania
       alpha2: RO
       alpha3: ROU
+      postal_code: true
     -
       country_name: Serbia
       alpha2: RS
       alpha3: SRB
+      postal_code: true
     -
       country_name: Russia
       alpha2: RU
       alpha3: RUS
+      postal_code: true
     -
       country_name: Rwanda
       alpha2: RW
       alpha3: RWA
+      postal_code: false
     -
       country_name: Saudi Arabia
       alpha2: SA
       alpha3: SAU
+      postal_code: false
     -
       country_name: Solomon Islands
       alpha2: SB
       alpha3: SLB
+      postal_code: false
     -
       country_name: Seychelles
       alpha2: SC
       alpha3: SYC
+      postal_code: false
     -
       country_name: Sudan
       alpha2: SD
       alpha3: SDN
+      postal_code: true
     -
       country_name: Sweden
       alpha2: SE
       alpha3: SWE
+      postal_code: true
     -
       country_name: Singapore
       alpha2: SG
       alpha3: SGP
+      postal_code: true
     -
       country_name: Saint Helena
       alpha2: SH
       alpha3: SHN
+      postal_code: true
     -
       country_name: Slovenia
       alpha2: SI
       alpha3: SVN
+      postal_code: true
     -
       country_name: Svalbard and Jan Mayen
       alpha2: SJ
       alpha3: SJM
+      postal_code: true
     -
       country_name: Slovakia
       alpha2: SK
       alpha3: SVK
+      postal_code: true
     -
       country_name: Sierra Leone
       alpha2: SL
       alpha3: SLE
+      postal_code: false
     -
       country_name: San Marino
       alpha2: SM
       alpha3: SMR
+      postal_code: true
     -
       country_name: Senegal
       alpha2: SN
       alpha3: SEN
+      postal_code: true
     -
       country_name: Somalia
       alpha2: SO
       alpha3: SOM
+      postal_code: false
     -
       country_name: Suriname
       alpha2: SR
       alpha3: SUR
+      postal_code: false
     -
       country_name: South Sudan
       alpha2: SS
       alpha3: SSD
+      postal_code: true
     -
       country_name: São Tomé and Príncipe
       alpha2: ST
       alpha3: STP
+      postal_code: false
     -
       country_name: El Salvador
       alpha2: SV
       alpha3: SLV
+      postal_code: true
     -
       country_name: Sint Maarten
       alpha2: SX
       alpha3: SXM
+      postal_code: true
     -
       country_name: Syria
       alpha2: SY
       alpha3: SYR
+      postal_code: false
     -
       country_name: Swaziland
       alpha2: SZ
       alpha3: SWZ
+      postal_code: true
     -
       country_name: Turks and Caicos Islands
       alpha2: TC
       alpha3: TCA
+      postal_code: true
     -
       country_name: Chad
       alpha2: TD
       alpha3: TCD
+      postal_code: true
     -
       country_name: French Southern Territories
       alpha2: TF
       alpha3: ATF
+      postal_code: false
     -
       country_name: Togo
       alpha2: TG
       alpha3: TGO
+      postal_code: true
     -
       country_name: Thailand
       alpha2: TH
       alpha3: THA
+      postal_code: true
     -
       country_name: Tajikistan
       alpha2: TJ
       alpha3: TJK
+      postal_code: true
     -
       country_name: Tokelau
       alpha2: TK
       alpha3: TKL
+      postal_code: false
     -
       country_name: East Timor
       alpha2: TL
       alpha3: TLS
+      postal_code: false
     -
       country_name: Turkmenistan
       alpha2: TM
       alpha3: TKM
+      postal_code: true
     -
       country_name: Tunisia
       alpha2: TN
       alpha3: TUN
+      postal_code: true
     -
       country_name: Tonga
       alpha2: TO
       alpha3: TON
+      postal_code: false
     -
       country_name: Turkey
       alpha2: TR
       alpha3: TUR
+      postal_code: true
     -
       country_name: Trinidad and Tobago
       alpha2: TT
       alpha3: TTO
+      postal_code: false
     -
       country_name: Tuvalu
       alpha2: TV
       alpha3: TUV
+      postal_code: true
     -
       country_name: Taiwan
       alpha2: TW
       alpha3: TWN
+      postal_code: true
     -
       country_name: Tanzania
       alpha2: TZ
       alpha3: TZA
+      postal_code: false
     -
       country_name: Ukraine
       alpha2: UA
       alpha3: UKR
+      postal_code: true
     -
       country_name: Uganda
       alpha2: UG
       alpha3: UGA
+      postal_code: false
     -
       country_name: U.S. Minor Outlying Islands
       alpha2: UM
       alpha3: UMI
+      postal_code: true
     -
       country_name: United States
       alpha2: US
       alpha3: USA
+      postal_code: true
     -
       country_name: Uruguay
       alpha2: UY
       alpha3: URY
+      postal_code: true
     -
       country_name: Uzbekistan
       alpha2: UZ
       alpha3: UZB
+      postal_code: true
     -
       country_name: Vatican City
       alpha2: VA
       alpha3: VAT
+      postal_code: true
     -
       country_name: Saint Vincent and the Grenadines
       alpha2: VC
       alpha3: VCT
+      postal_code: true
     -
       country_name: Venezuela
       alpha2: VE
       alpha3: VEN
+      postal_code: true
     -
       country_name: British Virgin Islands
       alpha2: VG
       alpha3: VGB
+      postal_code: true
     -
       country_name: U.S. Virgin Islands
       alpha2: VI
       alpha3: VIR
+      postal_code: true
     -
       country_name: Vietnam
       alpha2: VN
       alpha3: VNM
+      postal_code: true
     -
       country_name: Vanuatu
       alpha2: VU
       alpha3: VUT
+      postal_code: false
     -
       country_name: Wallis and Futuna
       alpha2: WF
       alpha3: WLF
+      postal_code: true
     -
       country_name: Samoa
       alpha2: WS
       alpha3: WSM
+      postal_code: true
     -
       country_name: Kosovo
       alpha2: XK
       alpha3: XKX
+      postal_code: true
     -
       country_name: Yemen
       alpha2: YE
       alpha3: YEM
+      postal_code: false
     -
       country_name: Mayotte
       alpha2: YT
       alpha3: MYT
+      postal_code: true
     -
       country_name: South Africa
       alpha2: ZA
       alpha3: ZAF
+      postal_code: false
     -
       country_name: Zambia
       alpha2: ZM
       alpha3: ZMB
+      postal_code: true
     -
       country_name: Zimbabwe
       alpha2: ZW
       alpha3: ZWE
+      postal_code: false
