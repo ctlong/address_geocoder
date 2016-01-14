@@ -1,6 +1,7 @@
 require 'yaml'
 
 class AddressGeocoder
+  ValidCountryAlpha2 = /\A[a-zA-Z]{2}\z/
   attr_accessor :api_key, :country, :state, :city, :postal_code, :street
   attr_reader :countries, :google_response, :former_address
 
@@ -63,12 +64,8 @@ class AddressGeocoder
   end
 
   def match_country
-    if @country && @country[/[a-zA-Z]/]
-      @countries.each do |country|
-        if @country.in? country.values
-          return country
-        end
-      end
+    if @country && @country[ValidCountryAlpha2]
+      return @countries[@country]
     end
     raise ArgumentError, 'Invalid country'
   end
