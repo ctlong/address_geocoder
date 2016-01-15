@@ -15,7 +15,6 @@ class AddressGeocoder
     @street           = opt[:street]
     @countries        = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
     match_country
-    match_city
   end
 
   def valid_address?
@@ -72,43 +71,42 @@ class AddressGeocoder
     raise ArgumentError, 'Invalid country'
   end
 
-  def match_city
-    raise ArgumentError, 'Invalid city' unless has_valid_city?
-  end
-
   def parse_response(fields)
     refined_address  = {country: match_country}
     has_neighborhood = false
     has_locality     = false
     fields.each do |field|
-      case field['types'][0]
-      when 'neighborhood'
-        refined_address[:city] = field['long_name']
-        has_neighborhood = true
-      when 'locality'
-        if has_neighborhood
-          refined_address[:state] = field['long_name']
-          has_locality = true
-        else
-          refined_address[:city] = field['long_name']
-        end
-      when 'administrative_area_level_4', 'administrative_area_level_3', 'administrative_area_level_2'
-        if has_neighborhood && has_locality
-          refined_address[:city] = refined_address[:state]
-          has_neighborhood = false
-        end
-        refined_address[:state] = field['long_name']
-      when 'administrative_area_level_1'
-        if has_neighborhood && has_locality
-          refined_address[:city] = refined_address[:state]
-          has_neighborhood = false
-        end
-        refined_address[:state] = field['short_name']
-      when 'postal_code'
-        refined_address[:postal_code] = field['long_name']
-      end
+      parse_field(field['types'][0], has_neighborhood, has_locality, refined_address)
     end
-    return refined_address
+  end
+
+  def parse_field(fields, has_neighborhood, has_locality, refined_address)
+    case field
+    when 'neighborhood'
+      refined_address[:city] = field['long_name']
+      has_neighborhood = true
+    when 'locality'
+      if has_neighborhood
+        refined_address[:state] = field['long_name']
+        has_locality = true
+      else
+        refined_address[:city] = field['long_name']
+      end
+    when 'administrative_area_level_4', 'administrative_area_level_3', 'administrative_area_level_2'
+      if has_neighborhood && has_locality
+        refined_address[:city] = refined_address[:state]
+        has_neighborhood = false
+      end
+      refined_address[:state] = field['long_name']
+    when 'administrative_area_level_1'
+      if has_neighborhood && has_locality
+        refined_address[:city] = refined_address[:state]
+        has_neighborhood = false
+      end
+      refined_address[:state] = field['short_name']
+    when 'postal_code'
+      refined_address[:postal_code] = field['long_name']
+    end
   end
 
   def has_valid_city?
