@@ -14,6 +14,8 @@ class AddressGeocoder
     @postal_code      = opt[:postal_code]
     @street           = opt[:street]
     @countries        = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
+    match_country
+    match_city
   end
 
   def valid_address?
@@ -55,7 +57,7 @@ class AddressGeocoder
       end
 
       # 2.2 Break if the address succeeded
-      break if (@google_response['status'] == "OK") && (@google_response['results'][0]['address_components'].length > 1)
+      break if success?
     end
   end
 
@@ -68,6 +70,10 @@ class AddressGeocoder
       return @countries[@country]
     end
     raise ArgumentError, 'Invalid country'
+  end
+
+  def match_city
+    raise ArgumentError, 'Invalid city' unless has_valid_city?
   end
 
   def parse_response(fields)
@@ -105,7 +111,7 @@ class AddressGeocoder
     return refined_address
   end
 
-  def has_valid_city_name?
+  def has_valid_city?
     return self.city && self.city[/[a-zA-Z]/]
   end
 
@@ -114,7 +120,7 @@ class AddressGeocoder
 
     address_params  = country.to_query("country")
     address_params += '|' + self.postal_code.to_query("postal_code") if (4.in? get_format_levels) && (level_of_search < 5)
-    address_params += '|' + self.city.to_query("locality") if has_valid_city_name? && !(level_of_search.in? [3,4,7])
+    address_params += '|' + self.city.to_query("locality") if has_valid_city? && !(level_of_search.in? [3,4,7])
     address_params += '|' + self.state.to_query("administrative_area") if self.state && (level_of_search != 4)
     address_params.gsub!(/\=/,':')
 
@@ -127,7 +133,7 @@ class AddressGeocoder
 
   def get_format_levels
     levels  = [1,5]
-    levels += [2,6] if has_valid_city_name?
+    levels += [2,6] if has_valid_city?
     levels += [3,7] if self.state
     if not_valid_postal_code?
       levels  -= [5,6,7]
