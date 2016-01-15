@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AddressGeocoder do
   describe 'when initialized' do
     it "should contain an array of countries" do
-      test = AddressGeocoder.new
+      test = AddressGeocoder.new({country: 'US', city: 'Phoenix'})
       expect(test.countries).to eq(YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country'])
     end
     it "should have attr accessors" do
@@ -15,9 +15,9 @@ describe AddressGeocoder do
       expect(test.street).to eq('301 First St.')
       expect(test.city).to eq('Crested Butte')
     end
-    it "should not show the refined address" do
-      test = AddressGeocoder.new
-      expect{test.refined_address}.to raise_error
+    it "should not have called google" do
+      test = AddressGeocoder.new({country: 'US', city: 'Phoenix'})
+      expect(test.google_response).to eq(nil)
     end
   end
 
