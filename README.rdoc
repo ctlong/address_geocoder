@@ -27,8 +27,9 @@ Not activated yet :)
 
 === How it works
 
-Gem sends addresses in varying formats to the Google Geocoding API until it receives a positive result.
-Then parses address into its seperate parts and returns either formatted version or lat/long.
+Gem sends addresses in varying formats to the Google Geocoding API.
+A positive response indicates that the address is valid.
+After a positive response gem can parse returned elements to suggest a formatted address.
 
 === Development and tests
 
