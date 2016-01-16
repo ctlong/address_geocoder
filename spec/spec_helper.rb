@@ -5,3 +5,9 @@ RSpec.configure do |config|
   # Use color in STDOUT
   config.color = true
 end
+lines = File.read ".env"
+lines = lines.split('\n')
+lines.each do |line|
+  line = line.split(' = ')
+  ENV[line[0]] = line[1].gsub!("\"", '')
+end
