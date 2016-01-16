@@ -1,5 +1,4 @@
 require 'spec_helper'
-
 describe AddressGeocoder do
   describe 'when initialized' do
     it "should contain an array of countries" do
@@ -23,12 +22,18 @@ describe AddressGeocoder do
 
   describe "#valid_address?" do
     context "when address can be not recogized" do
-      it "returns false"
+      it "returns false" do
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Not a city'})
+        expect(address_geocoder.valid_address?).to eq(false)
+      end
       it "adds errors message in an instance of address_geocoder"
     end
 
     context "when address can be recogized" do
-      it "returns true"
+      it "returns true" do
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing'})
+        expect(address_geocoder.valid_address?).to eq(true)
+      end
     end
   end
 

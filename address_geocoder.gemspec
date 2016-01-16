@@ -5,10 +5,11 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
   s.description = ""
   s.authors     = ["Carson Long", "Wing Leung Choi"]
-  s.email       = ["ctlong.970@gmail.com", "wingleung@goeasyship.com"]
+  s.email       = ["ctlong.970@gmail.com", "wingleungchoi@gmail.com"]
   s.homepage    = ""
   s.files       = ["lib/address_geocoder.rb", "lib/address_geocoder/countries.yaml"]
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'httparty'
+  s.add_development_dependency 'pry'
 end

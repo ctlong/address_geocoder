@@ -2,6 +2,7 @@ require 'yaml'
 
 class AddressGeocoder
   ValidCountryAlpha2 = /\A[a-zA-Z]{2}\z/
+  ValidCityName =  /\A[a-zA-Z\ ]*\z/
   attr_accessor :api_key, :country, :state, :city, :postal_code, :street
   attr_reader :countries, :google_response, :former_address
 
@@ -110,7 +111,7 @@ class AddressGeocoder
   end
 
   def has_valid_city?
-    return self.city && self.city[/[a-zA-Z]/]
+    return self.city && self.city[ValidCityName] # when city name does not match Regex will return nil
   end
 
   def get_final_url(level_of_search)
