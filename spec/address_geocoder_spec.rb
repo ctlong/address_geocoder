@@ -21,7 +21,7 @@ describe AddressGeocoder do
   end
 
   describe "#valid_address?" do
-    context "when address can be not recogized" do
+    context "when address can be not recognized" do
       it "returns false" do
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Not a city'})
         expect(address_geocoder.valid_address?).to eq(false)

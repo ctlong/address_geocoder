@@ -1,4 +1,6 @@
 require 'yaml'
+require 'httparty'
+require 'uri'
 
 class AddressGeocoder
   ValidCountryAlpha2 = /\A[a-zA-Z]{2}\z/
@@ -8,12 +10,12 @@ class AddressGeocoder
 
   def initialize(opt = {})
     # 1. Initialize variables
-    @api_key          = opt[:api_key]
+    @api_key          = opt[:api_key] || ''
     @country          = opt[:country]
-    @state            = opt[:state]
+    @state            = opt[:state] || ''
     @city             = opt[:city]
-    @postal_code      = opt[:postal_code]
-    @street           = opt[:street]
+    @postal_code      = opt[:postal_code] || ''
+    @street           = opt[:street] || ''
     @countries        = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
     match_country
   end
@@ -115,16 +117,14 @@ class AddressGeocoder
   end
 
   def get_final_url(level_of_search)
-    country         = match_country['alpha2']
-
-    address_params  = country.to_query("country")
-    address_params += '|' + self.postal_code.to_query("postal_code") if (4.in? get_format_levels) && (level_of_search < 5)
-    address_params += '|' + self.city.to_query("locality") if has_valid_city? && !(level_of_search.in? [3,4,7])
-    address_params += '|' + self.state.to_query("administrative_area") if self.state && (level_of_search != 4)
+    address_params  = hash_to_query({"country" => self.country})
+    address_params += '|' + hash_to_query({"postal_code" => self.postal_code}) if (get_format_levels.select { |x| x == 4 }).any? && (level_of_search < 5)
+    address_params += '|' + hash_to_query({"locality" => self.city}) if has_valid_city? && !([3,4,7].select { |x| x == level_of_search }).any?
+    address_params += '|' + hash_to_query({"administrative_area" => self.state}) if !(self.state.empty?) && (level_of_search != 4)
     address_params.gsub!(/\=/,':')
 
-    street          = self.street.to_query("address") + '&' if level_of_search.in? [1,5]
-    api_key         = "&key=#{self.api_key}"
+    street          = hash_to_query({"address" => self.street}) + '&' if ([1,5].select { |x| x == level_of_search }).any?
+    api_key         = "&key=#{self.api_key}" unless self.api_key.empty?
     language        = country == 'CN' ? "&language=zh-CN" : nil #TODO add more languages
 
     return "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{address_params}#{api_key}#{language}"
@@ -163,5 +163,9 @@ class AddressGeocoder
       end
     end
     return true
+  end
+
+  def hash_to_query(hash)
+    URI.encode_www_form(hash)
   end
 end
