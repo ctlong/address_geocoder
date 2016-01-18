@@ -23,7 +23,23 @@ describe AddressGeocoder do
   describe "#valid_address?" do
     context "when address can be not recognized" do
       it "returns false" do
-        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Not a city'})
+        # when only city
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        # when only postal code
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', postal_code: 'A6000A'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        # when only state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: 'Ohio'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        # when only street
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CH', street: '10, On Lok Mun Street'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        # when city vs postal code
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', postal_code: '102600'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        # when city vs state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', state: 'Liaoning'})
         expect(address_geocoder.valid_address?).to eq(false)
       end
       it "adds errors message in an instance of address_geocoder"
@@ -31,7 +47,35 @@ describe AddressGeocoder do
 
     context "when address can be recogized" do
       it "returns true" do
+        # when only city
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when only postal code
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', postal_code: '01501-000'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when only state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: 'Saitama'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when only street
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CH', street: 'Brunngasshalde'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when city vs postal code
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: '100050'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when city vs state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', city: 'Belo Horizonte', state: 'Minas Gerais'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when postal code vs street
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', city: 'Belo Horizonte', state: 'Minas Gerais'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when postal code vs state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'GR', state: 'Eastern Macedonia and Thrace', postal_code: '671 00'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when street, city, state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CI', street: 'Boulevard Houphouët-Boigny', city: 'San-Pédro', state: 'Bas-Sassandra'})
+        expect(address_geocoder.valid_address?).to eq(true)
+        # when street, city, postal_code
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'FR', street: '8 Boulevard Léon Bureau', city: 'Nantes', postal_code: '44200'})
         expect(address_geocoder.valid_address?).to eq(true)
       end
     end

@@ -5,6 +5,8 @@ RSpec.configure do |config|
   # Use color in STDOUT
   config.color = true
 end
+
+# set environment variable form .env
 lines = File.read ".env"
 lines = lines.split('\n')
 lines.each do |line|
