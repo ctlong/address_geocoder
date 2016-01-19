@@ -21,12 +21,12 @@ class AddressGeocoder
   end
 
   def valid_address?
-    call_google if values_have_changed
-    return success?
+    call_google if values_changed?
+    return success? && @google_response['certainty']
   end
 
   def suggested_addresses
-    call_google if values_have_changed
+    call_google if values_changed?
     return false unless success?
     return parse_response(@google_response['results'][0]['address_components'])
   end
@@ -58,13 +58,28 @@ class AddressGeocoder
         end
       end
 
-      # 2.2 Break if the address succeeded
-      break if success?
+      # 2.2 If the address succeeded:
+      if success?
+        set_certainty(level_of_search)
+        break
+      end
     end
   end
 
   def success?
     return (@google_response['status'] == "OK") && (@google_response['results'][0]['address_components'].length > 1)
+  end
+
+  def set_certainty(level)
+    if ([3,7].select { |x| x == level }).any? && has_valid_city?
+      @google_response['certainty'] = false
+    elsif (level == 4) && (has_valid_city? || has_valid_state?)
+      @google_response['certainty'] = false
+    elsif (level > 4) && !(not_valid_postal_code?)
+      @google_response['certainty'] = false
+    else
+      @google_response['certainty'] = true
+    end
   end
 
   def match_country
@@ -153,7 +168,7 @@ class AddressGeocoder
     return false
   end
 
-  def values_have_changed
+  def values_changed?
     if @google_response
       current_address = {
         city: @city,
