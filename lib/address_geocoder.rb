@@ -4,29 +4,29 @@ require 'uri'
 
 class AddressGeocoder
   ValidCountryAlpha2 = /\A[a-zA-Z]{2}\z/
-  ValidCityName =  /\A[a-zA-Z\ ]*\z/
+  ValidName          =  /\A[a-zA-Z\ ]*\z/
+  Countries          = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
   attr_accessor :api_key, :country, :state, :city, :postal_code, :street
-  attr_reader :countries, :google_response, :former_address
+  attr_reader :google_response, :former_address
 
   def initialize(opt = {})
     # 1. Initialize variables
     @api_key          = opt[:api_key] || ''
     @country          = opt[:country]
     @state            = opt[:state] || ''
-    @city             = opt[:city]
+    @city             = opt[:city] || ''
     @postal_code      = opt[:postal_code] || ''
     @street           = opt[:street] || ''
-    @countries        = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
     match_country
   end
 
   def valid_address?
-    call_google if values_have_changed
-    return success?
+    call_google if values_changed?
+    return success? && @google_response['certainty']
   end
 
   def suggested_addresses
-    call_google if values_have_changed
+    call_google if values_changed?
     return false unless success?
     return parse_response(@google_response['results'][0]['address_components'])
   end
@@ -54,12 +54,15 @@ class AddressGeocoder
         if attempts <= 5
           retry
         else
-          raise
+          raise ConnectionError, 'Could not connect to GoogleAPI'
         end
       end
 
-      # 2.2 Break if the address succeeded
-      break if success?
+      # 2.2 If the address succeeded:
+      if success?
+        set_certainty(level_of_search)
+        break
+      end
     end
   end
 
@@ -67,9 +70,21 @@ class AddressGeocoder
     return (@google_response['status'] == "OK") && (@google_response['results'][0]['address_components'].length > 1)
   end
 
+  def set_certainty(level)
+    if ([3,7].select { |x| x == level }).any? && has_valid_city?
+      @google_response['certainty'] = false
+    elsif (level == 4) && (has_valid_city? || has_valid_state?)
+      @google_response['certainty'] = false
+    elsif (level > 4) && !(not_valid_postal_code?)
+      @google_response['certainty'] = false
+    else
+      @google_response['certainty'] = true
+    end
+  end
+
   def match_country
     if @country && @country[ValidCountryAlpha2]
-      return @countries[@country]
+      return Countries[@country]
     end
     raise ArgumentError, 'Invalid country'
   end
@@ -113,14 +128,18 @@ class AddressGeocoder
   end
 
   def has_valid_city?
-    return self.city && self.city[ValidCityName] # when city name does not match Regex will return nil
+    return self.city && (self.city[ValidName] != '') # when city name does not match Regex will return nil
+  end
+
+  def has_valid_state?
+    return self.state && (self.state[ValidName] != '') # when city name does not match Regex will return nil
   end
 
   def get_final_url(level_of_search)
     address_params  = hash_to_query({"country" => self.country})
-    address_params += '|' + hash_to_query({"postal_code" => self.postal_code}) if (get_format_levels.select { |x| x == 4 }).any? && (level_of_search < 5)
+    address_params += '|' + hash_to_query({"postal_code" => self.postal_code}) if level_of_search < 5
     address_params += '|' + hash_to_query({"locality" => self.city}) if has_valid_city? && !([3,4,7].select { |x| x == level_of_search }).any?
-    address_params += '|' + hash_to_query({"administrative_area" => self.state}) if !(self.state.empty?) && (level_of_search != 4)
+    address_params += '|' + hash_to_query({"administrative_area" => self.state}) if has_valid_state? && (level_of_search != 4)
     address_params.gsub!(/\=/,':')
 
     street          = hash_to_query({"address" => self.street}) + '&' if ([1,5].select { |x| x == level_of_search }).any?
@@ -133,9 +152,9 @@ class AddressGeocoder
   def get_format_levels
     levels  = [1,5]
     levels += [2,6] if has_valid_city?
-    levels += [3,7] if self.state
+    levels += [3,7] if has_valid_state?
     if not_valid_postal_code?
-      levels  -= [5,6,7]
+      levels  -= [1,2,3]
     else
       levels  += [4]
     end
@@ -149,7 +168,7 @@ class AddressGeocoder
     return false
   end
 
-  def values_have_changed
+  def values_changed?
     if @google_response
       current_address = {
         city: @city,

@@ -1,9 +1,8 @@
 require 'spec_helper'
 describe AddressGeocoder do
   describe 'when initialized' do
-    it "should contain an array of countries" do
-      test = AddressGeocoder.new({country: 'US', city: 'Phoenix'})
-      expect(test.countries).to eq(YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country'])
+    it "should throw an error if the country is not recognized" do
+      expect{ AddressGeocoder.new({country: 'United States', city: 'Phoenix'}) }.to raise_error
     end
     it "should have attr accessors" do
       test = AddressGeocoder.new({api_key: '12345', country: 'US', state: 'CO', street: '301 First St.', city: 'Crested Butte', postal_code: '10022'})
@@ -26,18 +25,23 @@ describe AddressGeocoder do
         # when only city
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo'})
         expect(address_geocoder.valid_address?).to eq(false)
+        sleep(1)
         # when only postal code
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', postal_code: 'A6000A'})
         expect(address_geocoder.valid_address?).to eq(false)
+        sleep(1)
         # when only state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: 'Ohio'})
         expect(address_geocoder.valid_address?).to eq(false)
+        sleep(1)
         # when only street
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CH', street: '10, On Lok Mun Street'})
         expect(address_geocoder.valid_address?).to eq(false)
+        sleep(1)
         # when city vs postal code
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', postal_code: '102600'})
         expect(address_geocoder.valid_address?).to eq(false)
+        sleep(1)
         # when city vs state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', state: 'Liaoning'})
         expect(address_geocoder.valid_address?).to eq(false)
@@ -50,30 +54,39 @@ describe AddressGeocoder do
         # when only city
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when only postal code
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', postal_code: '01501-000'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when only state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: 'Saitama'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when only street
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CH', street: 'Brunngasshalde'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when city vs postal code
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: '100050'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when city vs state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', city: 'Belo Horizonte', state: 'Minas Gerais'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when postal code vs street
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'BR', city: 'Belo Horizonte', state: 'Minas Gerais'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when postal code vs state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'GR', state: 'Eastern Macedonia and Thrace', postal_code: '671 00'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when street, city, state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CI', street: 'Boulevard Houphouët-Boigny', city: 'San-Pédro', state: 'Bas-Sassandra'})
         expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1)
         # when street, city, postal_code
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'FR', street: '8 Boulevard Léon Bureau', city: 'Nantes', postal_code: '44200'})
         expect(address_geocoder.valid_address?).to eq(true)
