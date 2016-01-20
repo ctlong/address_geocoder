@@ -3,9 +3,11 @@ require 'httparty'
 require 'uri'
 
 class AddressGeocoder
-  ValidCountryAlpha2 = /\A[a-zA-Z]{2}\z/
-  ValidName          =  /\A[a-zA-Z\ ]*\z/
-  Countries          = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
+  ValidCountryAlpha2     = /\A[a-zA-Z]{2}\z/
+  ValidName              =  /\A[a-zA-Z\ ]*\z/
+  Countries              = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
+  CycleWithPostalCode    = {:all => 1, :remove_street => 2, :remove_city => 3, :remove_state  => 4}
+  CycleWithoutPostalCode = {:all => 5, :remove_street => 6, :remove_city => 7}
   attr_accessor :api_key, :country, :state, :city, :postal_code, :street
   attr_reader :google_response, :former_address
 
@@ -150,13 +152,13 @@ class AddressGeocoder
   end
 
   def get_format_levels
-    levels  = [1,5]
-    levels += [2,6] if has_valid_city?
-    levels += [3,7] if has_valid_state?
+    levels  = [CycleWithPostalCode[:all], CycleWithoutPostalCode[:all]]
+    levels += [CycleWithPostalCode[:remove_street], CycleWithoutPostalCode[:remove_street]] if has_valid_city?
+    levels += [CycleWithPostalCode[:remove_city], CycleWithoutPostalCode[:remove_city]] if has_valid_state?
     if not_valid_postal_code?
-      levels  -= [1,2,3]
+      levels  -= CycleWithPostalCode.values
     else
-      levels  += [4]
+      levels  += [CycleWithPostalCode[:remove_state]]
     end
     return levels.sort!
   end
