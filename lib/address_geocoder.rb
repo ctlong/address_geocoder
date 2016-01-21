@@ -3,20 +3,22 @@ require 'httparty'
 require 'uri'
 
 class AddressGeocoder
-  ValidCountryAlpha2 = /\A[a-zA-Z]{2}\z/
-  ValidName          =  /\A[a-zA-Z\ ]*\z/
-  Countries          = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
+  ValidCountryAlpha2     = /\A[a-zA-Z]{2}\z/
+  ValidName              = /\A[a-zA-Z\ ]*\z/
+  Countries              = YAML.load_file('lib/address_geocoder/countries.yaml')['countries']['country']
+  CycleWithPostalCode    = {:all => 1, :remove_street => 2, :remove_city => 3, :remove_state  => 4}
+  CycleWithoutPostalCode = {:all => 5, :remove_street => 6, :remove_city => 7}
   attr_accessor :api_key, :country, :state, :city, :postal_code, :street
   attr_reader :google_response, :former_address
 
   def initialize(opt = {})
     # 1. Initialize variables
-    @api_key          = opt[:api_key] || ''
-    @country          = opt[:country]
-    @state            = opt[:state] || ''
-    @city             = opt[:city] || ''
-    @postal_code      = opt[:postal_code] || ''
-    @street           = opt[:street] || ''
+    @api_key     = opt[:api_key] || ''
+    @country     = opt[:country]
+    @state       = opt[:state] || ''
+    @city        = opt[:city] || ''
+    @postal_code = opt[:postal_code] || ''
+    @street      = opt[:street] || ''
     match_country
   end
 
@@ -91,35 +93,30 @@ class AddressGeocoder
 
   def parse_response(fields)
     refined_address  = {country: match_country}
-    has_neighborhood = false
-    has_locality     = false
-    fields.each do |field|
-      parse_field(field['types'][0], has_neighborhood, has_locality, refined_address)
-    end
+    fields.each { |field| parse_field(field, refined_address) }
+    refined_address.delete(:switch)
+    return refined_address
   end
 
-  def parse_field(fields, has_neighborhood, has_locality, refined_address)
-    case field
-    when 'neighborhood'
-      refined_address[:city] = field['long_name']
-      has_neighborhood = true
-    when 'locality'
-      if has_neighborhood
-        refined_address[:state] = field['long_name']
-        has_locality = true
+  def parse_field(field, refined_address)
+    case field['types'][0]
+    when 'neighborhood', 'locality'
+      if refined_address[:city]
+        refined_address[:state]  = field['long_name']
+        refined_address[:switch] = true
       else
         refined_address[:city] = field['long_name']
       end
     when 'administrative_area_level_4', 'administrative_area_level_3', 'administrative_area_level_2'
-      if has_neighborhood && has_locality
-        refined_address[:city] = refined_address[:state]
-        has_neighborhood = false
+      if refined_address[:switch]
+        refined_address[:city]   = refined_address[:state]
+        refined_address[:switch] = false
       end
       refined_address[:state] = field['long_name']
     when 'administrative_area_level_1'
-      if has_neighborhood && has_locality
-        refined_address[:city] = refined_address[:state]
-        has_neighborhood = false
+      if refined_address[:switch]
+        refined_address[:city]   = refined_address[:state]
+        refined_address[:switch] = false
       end
       refined_address[:state] = field['short_name']
     when 'postal_code'
@@ -150,13 +147,13 @@ class AddressGeocoder
   end
 
   def get_format_levels
-    levels  = [1,5]
-    levels += [2,6] if has_valid_city?
-    levels += [3,7] if has_valid_state?
+    levels  = [CycleWithPostalCode[:all], CycleWithoutPostalCode[:all]]
+    levels += [CycleWithPostalCode[:remove_street], CycleWithoutPostalCode[:remove_street]] if has_valid_city?
+    levels += [CycleWithPostalCode[:remove_city], CycleWithoutPostalCode[:remove_city]] if has_valid_state?
     if not_valid_postal_code?
-      levels  -= [1,2,3]
+      levels  -= CycleWithPostalCode.values
     else
-      levels  += [4]
+      levels  += [CycleWithPostalCode[:remove_state]]
     end
     return levels.sort!
   end
