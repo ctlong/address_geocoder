@@ -19,7 +19,7 @@ class AddressGeocoder
     @city        = opt[:city] || ''
     @postal_code = opt[:postal_code] || ''
     @street      = opt[:street] || ''
-    match_country
+    raise ArgumentError, 'Invalid country' unless @country && @country[ValidCountryAlpha2] && Countries[@country]
   end
 
   def valid_address?
@@ -56,7 +56,7 @@ class AddressGeocoder
         if attempts <= 5
           retry
         else
-          raise ConnectionError, 'Could not connect to GoogleAPI'
+          raise SystemCallError, 'Could not connect to GoogleAPI'
         end
       end
 
@@ -73,7 +73,7 @@ class AddressGeocoder
   end
 
   def set_certainty(level)
-    if ([3,7].select { |x| x == level }).any? && has_valid_city?
+    if (3 == level || 7 == level) && has_valid_city?
       @google_response['certainty'] = false
     elsif (level == 4) && (has_valid_city? || has_valid_state?)
       @google_response['certainty'] = false
@@ -85,14 +85,11 @@ class AddressGeocoder
   end
 
   def match_country
-    if @country && @country[ValidCountryAlpha2]
-      return Countries[@country]
-    end
-    raise ArgumentError, 'Invalid country'
+    Countries[@country]
   end
 
   def parse_response(fields)
-    refined_address  = {country: match_country}
+    refined_address  = {country: match_country.reject { |k,v| k == 'postal_code' }, city: nil, state: nil, postal_code: nil, street: nil}
     fields.each { |field| parse_field(field, refined_address) }
     refined_address.delete(:switch)
     return refined_address
@@ -119,8 +116,10 @@ class AddressGeocoder
         refined_address[:switch] = false
       end
       refined_address[:state] = field['short_name']
-    when 'postal_code'
+    when 'postal_code', 'postal_code_prefix'
       refined_address[:postal_code] = field['long_name']
+    when 'route'
+      refined_address[:street] = field['long_name']
     end
   end
 
@@ -141,7 +140,7 @@ class AddressGeocoder
 
     street          = hash_to_query({"address" => self.street}) + '&' if ([1,5].select { |x| x == level_of_search }).any?
     api_key         = "&key=#{self.api_key}" unless self.api_key.empty?
-    language        = country == 'CN' ? "&language=zh-CN" : nil #TODO add more languages
+    language        =  nil #country == 'CN' ? "&language=zh-CN" : nil
 
     return "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{address_params}#{api_key}#{language}"
   end
@@ -167,13 +166,7 @@ class AddressGeocoder
 
   def values_changed?
     if @google_response
-      current_address = {
-        city: @city,
-        street: @street,
-        country: @country,
-        postal_code: @postal_code,
-        state: @state
-      }
+      current_address = {city: @city, street: @street, country: @country, postal_code: @postal_code, state: @state}
       if current_address == @former_address
         return false
       end
