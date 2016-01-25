@@ -112,21 +112,32 @@ describe AddressGeocoder do
         # when only street
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CH', street: '10, On Lok Mun Street'})
         expect(address_geocoder.suggested_addresses).to eq(false)
+        # when correct city vs wrong state
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Hangzhou', state: 'Osaka Prefecture'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        expect(address_geocoder.suggested_addresses).to eq(false)
+        sleep(1)
       end
       it "adds errors message in an instance of address_geocoder"
     end
 
     context "when address is not valid, but can still be recognized" do
       it "returns a hash with keys: country state city postal_code street" do
-        # when city vs postal code
+        # when wrong city vs correct postal code
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', postal_code: '102600'})
         expect(address_geocoder.valid_address?).to eq(false)
         expect(address_geocoder.suggested_addresses).to eq({country: {'country_name' => 'China', 'alpha3' => 'CHN'}, postal_code: '102600', city: 'Beijing', street: nil, state: 'Beijing'})
         sleep(1)
-        # when city vs state
+        # when correct city vs wrong postal code
+        address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: 'AE102600'})
+        expect(address_geocoder.valid_address?).to eq(false)
+        expect(address_geocoder.suggested_addresses).to eq({country: {'country_name' => 'China', 'alpha3' => 'CHN'}, postal_code: nil, city: 'Beijing', street: nil, state: 'Beijing'})
+        sleep(1)
+        # when wrong city vs correct state
         address_geocoder = AddressGeocoder.new({api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', state: 'Liaoning'})
         expect(address_geocoder.valid_address?).to eq(false)
         expect(address_geocoder.suggested_addresses).to eq({country: {'country_name' => 'China', 'alpha3' => 'CHN'}, postal_code: nil, city: nil, street: nil, state: 'Liaoning'})
+        sleep(1)
       end
     end
 
