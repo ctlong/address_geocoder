@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     address_geocoder (0.0.1)
-      httparty (= 0.13.7)
+      httparty (~> 0.13.7)
 
 GEM
   remote: https://rubygems.org/
@@ -39,8 +39,8 @@ PLATFORMS
 
 DEPENDENCIES
   address_geocoder!
-  pry (= 0.10.3)
-  rspec (= 3.4.0)
+  pry (~> 0.10.3)
+  rspec (~> 3.4.0)
 
 BUNDLED WITH
    1.10.6
