@@ -1,15 +1,18 @@
 require 'yaml'
-require 'httparty'
-require 'uri'
 
 module AddressGeocoder
-  class Base
+  class Base # :nodoc:
+    autoload :Request, File.expand_path('../request', __FILE__)
+    autoload :Url,     File.expand_path('../url', __FILE__)
+    autoload :Parse,   File.expand_path('../parse', __FILE__)
+
     REGEX             = /\A[a-zA-Z\ ]*\z/
     COUNTRIES         = YAML.load_file('lib/address_geocoder/countries.yaml')
     CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3, remove_state: 4 }.freeze
     CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
+
     attr_accessor :api_key, :country, :state, :city, :postal_code, :street
-    attr_reader :google_response, :former_address
+    attr_reader :response, :former_address
 
     def initialize(opt = {})
       # 1. Initialize variables
@@ -24,66 +27,42 @@ module AddressGeocoder
 
     def valid_address?
       call_google if values_changed?
-      success? && @google_response['certainty']
+      @response.success? && @response.result['certainty']
     end
 
     def suggested_addresses
       call_google if values_changed?
-      return false unless success?
-      parse_response(@google_response['results'][0]['address_components'])
+      return false unless @response.success?
+      parse_response(@response.result['results'][0]['address_components'])
     end
 
     private
 
     def call_google
       # 1 initialize former address
-      @former_address = {
-        city: @city,
-        street: @street,
-        country: @country,
-        postal_code: @postal_code,
-        state: @state
-      }
-
+      @former_address = { city: @city, street: @street, country: @country, postal_code: @postal_code, state: @state }
       # 2 Loop through the levels (once one works break the loop)
       call_levels.each do |level_of_search|
-
-        # 2.1 Make call to Google
-        attempts = 0
-        begin
-          @google_response = HTTParty.get(get_final_url(level_of_search))
-        rescue
-          sleep(0.5)
-          attempts += 1
-          if attempts <= 5
-            retry
-          else
-            raise SystemCallError, 'Could not connect to GoogleAPI'
-          end
-        end
-
-        # 2.2 If the address succeeded:
-        if success?
-          set_certainty(level_of_search)
+        # 2.1 Set url
+        request_hash = @former_address.merge(level: level_of_search, api_key: @api_key)
+        request_hash.delete(:city) unless valid_city?
+        request_hash.delete(:state) unless valid_state?
+        request_url = Url.new(request_hash)
+        # 2.2 Make call to google
+        @response = Request.new(request_url.formulate)
+        # 2.3 If the address succeeded:
+        if @response.success?
+          @response.result['certainty'] = evaluate_certainty(level_of_search)
           break
         end
       end
     end
 
-    def success?
-      (@google_response['status'] == "OK") && (@google_response['results'][0]['address_components'].length > 1)
-    end
-
-    def set_certainty(level)
-      if (3 == level || 7 == level) && valid_city?
-        @google_response['certainty'] = false
-      elsif (level == 4) && (valid_city? || valid_state?)
-        @google_response['certainty'] = false
-      elsif (level > 4) && !not_valid_postal_code?
-        @google_response['certainty'] = false
-      else
-        @google_response['certainty'] = true
-      end
+    def evaluate_certainty(level)
+      return false if Parse.value_present?(level, [3, 4, 7], valid_city?)
+      return false if Parse.value_present?(level, [4], valid_state?)
+      return false if Parse.value_present?(level, [5, 6, 7], valid_postal_code?)
+      true
     end
 
     def match_country
@@ -126,29 +105,16 @@ module AddressGeocoder
     end
 
     def valid_city?
-      self.city && (self.city[REGEX] != '') # when city name does not match Regex will return nil
+      @city && (@city[REGEX] != '') # when city name does not match Regex will return nil
     end
 
     def valid_state?
-      self.state && (self.state[REGEX] != '') # when city name does not match Regex will return nil
-    end
-
-    def get_final_url(level_of_search)
-      address_params  = hash_to_query('country' => self.country)
-      address_params += '|' + hash_to_query('postal_code' => self.postal_code) if level_of_search < 5
-      address_params += '|' + hash_to_query('locality' => self.city) if valid_city? && !([3, 4, 7].select { |x| x == level_of_search }).any?
-      address_params += '|' + hash_to_query('administrative_area' => self.state) if valid_state? && (level_of_search != 4)
-      address_params.tr!('\=', ':')
-
-      street          = hash_to_query('address' => self.street) + '&' if ([1,5].select { |x| x == level_of_search }).any?
-      address_params += "&key=#{self.api_key}" unless self.api_key.empty?
-      language        = nil # country == 'CN' ? "&language=zh-CN" : nil
-
-      "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{address_params}#{language}"
+      @state && (@state[REGEX] != '') # when city name does not match Regex will return nil
     end
 
     def call_levels
-      levels  = [CYCLEWITHPOSTAL[:all], CYCLEWITHNOPOSTAL[:all]]
+      levels  = []
+      levels += [CYCLEWITHPOSTAL[:all], CYCLEWITHNOPOSTAL[:all]] unless @street.empty?
       levels += [CYCLEWITHPOSTAL[:remove_street], CYCLEWITHNOPOSTAL[:remove_street]] if valid_city?
       levels += [CYCLEWITHPOSTAL[:remove_city], CYCLEWITHNOPOSTAL[:remove_city]] if valid_state?
       if not_valid_postal_code?
@@ -160,15 +126,19 @@ module AddressGeocoder
     end
 
     def not_valid_postal_code?
-      postal_code = self.postal_code.to_s.tr(' ', '')
-      return true unless match_country['postal_code']
-      return true if postal_code.length < 3
-      return true if postal_code.tr(postal_code[0], '') == '' && !(postal_code[0].to_i.in? Array(1..9))
-      false
+      !valid_postal_code?
+    end
+
+    def valid_postal_code?
+      postal_code = @postal_code.to_s.tr(' ', '')
+      return false unless match_country['postal_code']
+      return false if postal_code.length < 3
+      return false if postal_code.tr(postal_code[0], '') == '' && !(postal_code[0].to_i.in? Array(1..9))
+      true
     end
 
     def values_changed?
-      return true unless @google_response
+      return true unless @response
       current_address = {
         city: @city,
         street: @street,
@@ -177,10 +147,6 @@ module AddressGeocoder
         state: @state
       }
       current_address == @former_address
-    end
-
-    def hash_to_query(hash)
-      URI.encode_www_form(hash)
     end
   end
 end
