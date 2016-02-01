@@ -16,31 +16,36 @@ module AddressGeocoder
 
     def initialize(opt = {})
       # 1. Initialize variables
-      @api_key     = opt[:api_key] || ''
+      @api_key     = opt[:api_key].to_s
       @country     = opt[:country]
-      @state       = opt[:state] || ''
-      @city        = opt[:city] || ''
-      @postal_code = opt[:postal_code] || ''
-      @street      = opt[:street] || ''
-      fail ArgumentError, 'Invalid country' unless @country && @country[/\A[a-zA-Z]{2}\z/] && COUNTRIES[@country]
+      @state       = opt[:state].to_s
+      @city        = opt[:city].to_s
+      @postal_code = opt[:postal_code].to_s
+      @street      = opt[:street].to_s
+      unless @country && @country[/\A[a-zA-Z]{2}\z/] && match_country
+        fail ArgumentError, 'Invalid country'
+      end
     end
 
     def valid_address?
+      # 1. If address values have changed call google
       call_google if values_changed?
+      # 2. Return T/F depending on success of call and certainty of success
       @response.success? && @response.result['certainty']
     end
 
     def suggested_addresses
+      # 1. If address values have changed call google
       call_google if values_changed?
+      # 2. If response failed return false
       return false unless @response.success?
-      refined_address = {
-        country: match_country.reject { |k| k == 'postal_code' },
-        city: nil,
-        state: nil,
-        postal_code: nil,
-        street: nil
-      }
-      Parse.new(@response.result['results'][0]['address_components'], refined_address).parse_google_response
+      # 3. Initialize refined_address
+      country_wo_postal = match_country.reject { |k| k == :postal_code }
+      refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
+      # 4. Pass refined address and google response to parser
+      parser = Parse.new(@response.result['results'][0]['address_components'], refined_address)
+      # 5. return parsed google response as suggested address
+      parser.parse_google_response
     end
 
     private
@@ -103,7 +108,7 @@ module AddressGeocoder
 
     def valid_postal_code?
       postal_code = @postal_code.to_s.tr(' ', '')
-      return false unless match_country['postal_code']
+      return false unless match_country[:postal_code]
       return false if postal_code.length < 3
       return false if postal_code.tr(postal_code[0], '') == '' && !(postal_code[0].to_i.in? Array(1..9))
       true
@@ -118,7 +123,7 @@ module AddressGeocoder
         postal_code: @postal_code,
         state: @state
       }
-      current_address == @former_address
+      current_address != @former_address
     end
   end
 end
