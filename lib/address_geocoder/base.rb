@@ -22,7 +22,7 @@ module AddressGeocoder
       @city        = opt[:city] || ''
       @postal_code = opt[:postal_code] || ''
       @street      = opt[:street] || ''
-      raise ArgumentError, 'Invalid country' unless @country && @country[/\A[a-zA-Z]{2}\z/] && COUNTRIES[@country]
+      fail ArgumentError, 'Invalid country' unless @country && @country[/\A[a-zA-Z]{2}\z/] && COUNTRIES[@country]
     end
 
     def valid_address?
@@ -33,7 +33,14 @@ module AddressGeocoder
     def suggested_addresses
       call_google if values_changed?
       return false unless @response.success?
-      parse_response(@response.result['results'][0]['address_components'])
+      refined_address = {
+        country: match_country.reject { |k| k == 'postal_code' },
+        city: nil,
+        state: nil,
+        postal_code: nil,
+        street: nil
+      }
+      Parse.new(@response.result['results'][0]['address_components'], refined_address).parse_google_response
     end
 
     private
@@ -67,41 +74,6 @@ module AddressGeocoder
 
     def match_country
       COUNTRIES[@country]
-    end
-
-    def parse_response(fields)
-      refined_address = { country: match_country.reject { |k| k == 'postal_code' }, city: nil, state: nil, postal_code: nil, street: nil }
-      fields.each { |field| parse_field(field, refined_address) }
-      refined_address.delete(:switch)
-      refined_address
-    end
-
-    def parse_field(field, refined_address)
-      case field['types'][0]
-      when 'neighborhood', 'locality'
-        if refined_address[:city]
-          refined_address[:state]  = field['long_name']
-          refined_address[:switch] = true
-        else
-          refined_address[:city] = field['long_name']
-        end
-      when 'administrative_area_level_4', 'administrative_area_level_3', 'administrative_area_level_2'
-        if refined_address[:switch]
-          refined_address[:city]   = refined_address[:state]
-          refined_address[:switch] = false
-        end
-        refined_address[:state] = field['long_name']
-      when 'administrative_area_level_1'
-        if refined_address[:switch]
-          refined_address[:city]   = refined_address[:state]
-          refined_address[:switch] = false
-        end
-        refined_address[:state] = field['short_name']
-      when 'postal_code', 'postal_code_prefix'
-        refined_address[:postal_code] = field['long_name']
-      when 'route'
-        refined_address[:street] = field['long_name']
-      end
     end
 
     def valid_city?
