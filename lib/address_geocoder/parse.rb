@@ -18,7 +18,7 @@ class Parse # :nodoc:
     @field = field
     if contains?(CITY_TYPES)
       matched_city(field['long_name'])
-    elsif contains?(CITY_TYPES)
+    elsif contains?(STATE_TYPES)
       matched_state(field['long_name'])
     elsif contains?(['administrative_area_level_1'])
       matched_state(field['short_name'])
