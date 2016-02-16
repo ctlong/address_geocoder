@@ -7,7 +7,7 @@ RSpec.configure do |config|
 end
 
 # set environment variable form .env
-lines = File.read ".env"
+lines = File.read '.env'
 lines = lines.split('\n')
 lines.each do |line|
   line = line.split(' = ')

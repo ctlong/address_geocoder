@@ -15,13 +15,15 @@ class AddressGeocoder
       ES: 'es',
       KP: 'ko',
       RU: 'ru',
-      DE: 'de'
+      DE: 'de',
+      FR: 'fr'
     }.freeze
 
     def initialize(opts = {})
-      @street  = opts[:street]
-      @level   = opts[:level]
-      @api_key = opts[:api_key]
+      @street           = opts[:street]
+      @level            = opts[:level]
+      @api_key          = opts[:api_key]
+      @enable_languages = opts[:enable_languages]
       @address = prune(opts)
     end
 
@@ -35,8 +37,11 @@ class AddressGeocoder
 
       street   = hash_to_query('address' => @street) + '&' if ([1, 5] & [@level]).any?
       params  += "&key=#{@api_key}" unless @api_key.empty?
-      language = LANGUAGES[country.to_sym]
-      language = "&language=#{language}" if language
+      if @enable_languages && (lang_code = LANGUAGES[@address[:country].to_sym])
+        language = "&language=#{lang_code}"
+      else
+        language = nil
+      end
 
       "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{params}#{language}"
     end
@@ -51,6 +56,7 @@ class AddressGeocoder
       hash.delete(:level)
       hash.delete(:street)
       hash.delete(:api_key)
+      hash.delete(:enable_languages)
       hash.delete(:postal_code) if @level > 4
       hash.delete(:city)        if ([3, 4, 7] & [@level]).any?
       hash.delete(:state)       if @level == 4
