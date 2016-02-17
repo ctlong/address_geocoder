@@ -21,7 +21,8 @@ class AddressGeocoder # :nodoc:
     @city             = opt[:city].to_s
     @postal_code      = opt[:postal_code].to_s
     @street           = opt[:street].to_s
-    @enable_languages = opt[:enable_languages].nil? ? false : !!opt[:enable_languages]
+    @enable_languages = !!opt[:enable_languages]
+    # 2. Throw error if can't find country
     unless @country && @country[/\A[a-zA-Z]{2}\z/] && match_country
       fail ArgumentError, 'Invalid country'
     end
@@ -72,58 +73,71 @@ class AddressGeocoder # :nodoc:
 
   def evaluate_certainty(level)
     # False if only returned country
-    return false if @response.result['results'][0]['address_components'].count == 1
+    return false if Parse.just_country?(@response)
     # False if country is not inputted country
-    return false if !(@response.result['results'][0]['address_components'].select { |x| x['short_name'] == @country }).any?
+    return false if Parse.correct_country?(@response)
     # False if had valid city but level didn't include city
     return false if Parse.value_present?(level, [3, 4, 7], valid_city?)
     # False if had valid state but level didn't include state
     return false if Parse.value_present?(level, [4], valid_state?)
     # False if had valid postal code but level didn't include postal code
     return false if Parse.value_present?(level, [5, 6, 7], valid_postal_code?)
-    # Else return true
+    # Else true
     true
   end
 
   def match_country
-    COUNTRIES[@country]
+    COUNTRIES[@country] # returns matched country from countries yaml
   end
 
   def valid_city?
-    @city && (@city[REGEX] != '') # when city name does not match Regex will return nil
+    @city && (@city[REGEX] != '') # nil if city name does not match Regex
   end
 
   def valid_state?
-    @state && (@state[REGEX] != '') # when city name does not match Regex will return nil
+    @state && (@state[REGEX] != '') # nil if city name does not match Regex
   end
 
   def call_levels
+    # 1. Init levels
     levels  = []
+    # 2. Assign base levels unless no street
     levels += [CYCLEWITHPOSTAL[:all], CYCLEWITHNOPOSTAL[:all]] unless @street.empty?
+    # 3. Assign levels that don't use street if valid city
     levels += [CYCLEWITHPOSTAL[:remove_street], CYCLEWITHNOPOSTAL[:remove_street]] if valid_city?
+    # 4. Assign levels that don't use street,city if valid state
     levels += [CYCLEWITHPOSTAL[:remove_city], CYCLEWITHNOPOSTAL[:remove_city]] if valid_state?
-    if not_valid_postal_code?
-      levels  -= CYCLEWITHPOSTAL.values
-    else
+    # 5. If valid postal code:
+    if valid_postal_code?
+      # 5.1 Assign the level that doesn't use street,city,state
       levels  += [CYCLEWITHPOSTAL[:remove_state]]
+    # 6. Else:
+    else
+      # 6.1 Remove all levels that included postal code
+      levels  -= CYCLEWITHPOSTAL.values
     end
+    # 7. Return sorted array
     levels.sort!
   end
 
-  def not_valid_postal_code?
-    !valid_postal_code?
-  end
-
   def valid_postal_code?
+    # 1. Remove spaces
     postal_code = @postal_code.to_s.tr(' ', '')
+    # 2. False if country does not have postal codes
     return false unless match_country[:postal_code]
+    # 3. False if postal code length is not at least 4
     return false if postal_code.length < 3
-    return false if postal_code.tr(postal_code[0], '') == '' && !(postal_code[0].to_i.in? Array(1..9))
+    # 4. False if postal code is all one char (if that char isn't 1-9)
+    all_one_char = postal_code.tr(postal_code[0], '') == ''
+    return false if all_one_char && !(postal_code[0].to_i.in? Array(1..9))
+    # 5. Else true
     true
   end
 
   def values_changed?
+    # True If no previous google response stored
     return true unless @response
+    # Return the comparison of current and former addresses
     current_address = {
       city: @city,
       street: @street,
