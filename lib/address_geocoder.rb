@@ -75,7 +75,7 @@ class AddressGeocoder # :nodoc:
     # False if only returned country
     return false if Parse.just_country?(@response)
     # False if country is not inputted country
-    return false if Parse.correct_country?(@response)
+    return false if !Parse.correct_country?(@response, @country)
     # False if had valid city but level didn't include city
     return false if Parse.value_present?(level, [3, 4, 7], valid_city?)
     # False if had valid state but level didn't include state
