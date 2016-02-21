@@ -1,5 +1,6 @@
 require 'yaml'
 require 'address_geocoder/version'
+require 'address_geocoder/error'
 require 'address_geocoder/parse'
 require 'address_geocoder/request'
 require 'address_geocoder/url'

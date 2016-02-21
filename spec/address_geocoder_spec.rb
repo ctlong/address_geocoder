@@ -92,6 +92,54 @@ describe AddressGeocoder do
         expect(address_geocoder.valid_address?).to eq(true)
       end
     end
+
+    context 'when address is of non-english and be recogized' do
+      it "returns true" do
+        # when only city
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: '北京')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when only postal code
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'BR', postal_code: '01501-000')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when only state
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: '埼玉県')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when only street
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CH', street: 'Brunngasshalde')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when city vs postal code
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: '北京', postal_code: '100050')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when city vs state
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'BR', city: 'Belo Horizonte', state: 'Minas Gerais')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when postal code vs state
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'GR', state: 'Eastern Macedonia and Thrace', postal_code: '671 00')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when street, city, state
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CI', street: 'Boulevard Houphouët-Boigny', city: 'San-Pédro', state: 'Bas-Sassandra')
+        expect(address_geocoder.valid_address?).to eq(true)
+        sleep(1.5)
+        # when street, city, postal_code
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'FR', street: '8 Boulevard Léon Bureau', city: 'Nantes', postal_code: '44200')
+        expect(address_geocoder.valid_address?).to eq(true)
+      end
+    end
+
+    context 'when fail to call_google' do
+      it "will raise an error" do
+        allow(HTTParty).to receive(:get).and_raise{"mocking a connection error"}
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: '100050')
+        expect{address_geocoder.valid_address?}.to raise_error(AddressGeocoder::ConnectionError){ 'Could not connect to GoogleAPI' }
+      end
+    end
   end
 
   describe '#suggested_address' do

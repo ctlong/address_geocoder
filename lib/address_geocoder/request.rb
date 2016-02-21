@@ -12,7 +12,7 @@ class AddressGeocoder
         sleep(0.5)
         attempts += 1
         retry if attempts <= 5
-        raise SystemCallError, 'Could not connect to GoogleAPI'
+        raise ConnectionError, 'Could not connect to GoogleAPI'
       end
     end
 
