@@ -10,18 +10,18 @@ class AddressGeocoder # :nodoc:
   CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3, remove_state: 4 }.freeze
   CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
 
-  attr_accessor :api_key, :country, :state, :city, :postal_code, :street, :enable_languages
+  attr_accessor :api_key, :country, :state, :city, :postal_code, :street, :language
   attr_reader :response, :former_address
 
   def initialize(opt = {})
     # 1. Initialize variables
-    @api_key          = opt[:api_key].to_s
-    @country          = opt[:country]
-    @state            = opt[:state].to_s
-    @city             = opt[:city].to_s
-    @postal_code      = opt[:postal_code].to_s
-    @street           = opt[:street].to_s
-    @enable_languages = !!opt[:enable_languages]
+    @api_key     = opt[:api_key].to_s
+    @country     = opt[:country]
+    @state       = opt[:state].to_s
+    @city        = opt[:city].to_s
+    @postal_code = opt[:postal_code].to_s
+    @street      = opt[:street].to_s
+    @language    = opt[:language]
     # 2. Throw error if can't find country
     unless @country && @country[/\A[a-zA-Z]{2}\z/] && match_country
       fail ArgumentError, 'Invalid country'
@@ -57,7 +57,7 @@ class AddressGeocoder # :nodoc:
     # 2 Loop through the levels (once one works break the loop)
     call_levels.each do |level_of_search|
       # 2.1 Set url
-      request_hash = @former_address.merge(level: level_of_search, api_key: @api_key, enable_languages: @enable_languages)
+      request_hash = @former_address.merge(level: level_of_search, api_key: @api_key, language: @language)
       request_hash.delete(:city) unless valid_city?
       request_hash.delete(:state) unless valid_state?
       request_url = Url.new(request_hash)

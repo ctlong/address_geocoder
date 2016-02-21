@@ -185,21 +185,21 @@ describe AddressGeocoder do
       end
     end
 
-    context 'when enable_languages is true' do
+    context 'when a language is passed' do
       it 'returns suggested address from certain countries in different languages' do
         # when Japan return in Japanese
-        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: 'Saitama', enable_languages: true)
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'JP', state: 'Saitama', language: 'ja')
         expect(address_geocoder.suggested_addresses).to eq(country: { country_name: 'Japan', alpha3: 'JPN' }, city: nil, state: '埼玉県', street: nil, postal_code: nil)
         sleep(1.5)
         # when China return in Mandarin
-        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: '100050', enable_languages: true)
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: '100050', language: 'zh-CN')
         expect(address_geocoder.suggested_addresses).to eq(country: { country_name: 'China', alpha3: 'CHN' }, city: '北京市', state: '北京市', street: nil, postal_code: '100050')
         sleep(1.5)
         # when France return in French
-        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'FR', street: '8 Boulevard Léon Bureau', city: 'Nantes', postal_code: '44200', enable_languages: true)
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'FR', street: '8 Boulevard Léon Bureau', city: 'Nantes', postal_code: '44200', language: 'fr')
         expect(address_geocoder.suggested_addresses).to eq(country: { country_name: 'France', alpha3: 'FRA' }, city: 'Nantes', state: 'Pays de la Loire', street: 'Boulevard Léon Bureau', postal_code: '44200')
         # when Germany return in German
-        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'DE', postal_code: '12107', enable_languages: true)
+        address_geocoder = AddressGeocoder.new(api_key: ENV['AddressGeocoderApiKey'], country: 'DE', postal_code: '12107', language: 'de')
         expect(address_geocoder.suggested_addresses).to eq(country: { country_name: 'Germany', alpha3: 'DEU' }, city: 'Berlin', state: 'Berlin', street: nil, postal_code: '12107')
       end
     end
