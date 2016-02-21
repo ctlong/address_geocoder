@@ -9,11 +9,14 @@ class AddressGeocoder
       state: 'administrative_area'
     }.freeze
 
+    LANGUAGES = ['zh-CN', 'ja', 'es', 'ko', 'ru', 'de', 'fr'].freeze
+
     def initialize(opts = {})
-      @street  = opts[:street]
-      @level   = opts[:level]
-      @api_key = opts[:api_key]
-      @address = prune(opts)
+      @street   = opts[:street]
+      @level    = opts[:level]
+      @api_key  = opts[:api_key]
+      @language = opts[:language]
+      @address  = prune(opts)
     end
 
     def formulate
@@ -24,10 +27,15 @@ class AddressGeocoder
       end
       params.tr!('\=', ':')
 
-      street  = hash_to_query('address' => @street) + '&' if ([1, 5] & [@level]).any?
-      params += "&key=#{@api_key}" unless @api_key.empty?
+      street   = hash_to_query('address' => @street) + '&' if ([1, 5] & [@level]).any?
+      params  += "&key=#{@api_key}" unless @api_key.empty?
+      if @language && ([@language] & LANGUAGES).any?
+        language = "&language=#{@language}"
+      else
+        language = nil
+      end
 
-      "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{params}"
+      "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{params}#{language}"
     end
 
     private
@@ -40,6 +48,7 @@ class AddressGeocoder
       hash.delete(:level)
       hash.delete(:street)
       hash.delete(:api_key)
+      hash.delete(:language)
       hash.delete(:postal_code) if @level > 4
       hash.delete(:city)        if ([3, 4, 7] & [@level]).any?
       hash.delete(:state)       if @level == 4

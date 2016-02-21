@@ -34,6 +34,16 @@ class AddressGeocoder
       ([level] & comparison_array).any? && value
     end
 
+    def self.just_country?(google_response)
+      google_response.result['results'][0]['address_components'].count == 1
+    end
+
+    def self.correct_country?(google_response, country)
+      components = google_response.result['results']
+      components = components[0]['address_components']
+      (components.select { |x| x['short_name'] == country }).any?
+    end
+
     private
 
     def contains?(array)
