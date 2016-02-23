@@ -11,7 +11,7 @@ class AddressGeocoder # :nodoc:
   CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3, remove_state: 4 }.freeze
   CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
 
-  attr_accessor :api_key, :country, :state, :city, :postal_code, :street, :language
+  attr_accessor :api_key, :country, :state, :city, :postal_code, :street, :language, :map_apis
   attr_reader :response, :former_address
 
   def initialize(opt = {})
@@ -30,46 +30,32 @@ class AddressGeocoder # :nodoc:
   end
 
   def valid_address?
-    # 1. If address values have changed call google
-    call_google if values_changed?
+    # 1. If address values have changed call third_party_api
+    call_map_apis if values_changed?
     # 2. Return T/F depending on success of call and certainty of success
     @response.success? && @response.result['certainty']
   end
 
   def suggested_addresses
-    # 1. If address values have changed call google
-    call_google if values_changed?
+    # 1. If address values have changed call third_party_api
+    call_map_apis if values_changed?
     # 2. If response failed return false
     return false unless @response.success?
     # 3. Initialize refined_address
     country_wo_postal = match_country.reject { |k| k == :postal_code }
     refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
-    # 4. Pass refined address and google response to parser
+    # 4. Pass refined address and third_party_api response to parser
     parser = Parse.new(@response.result['results'][0]['address_components'], refined_address)
-    # 5. return parsed google response as suggested address
-    parser.parse_google_response
+    # 5. return parsed third_party_api response as suggested address
+    parser.parse_third_party_api_response
   end
 
   private
 
-  def call_google
+  def call_map_apis
     # 1 initialize former address
     @former_address = { city: @city, street: @street, country: @country, postal_code: @postal_code, state: @state }
-    # 2 Loop through the levels (once one works break the loop)
-    call_levels.each do |level_of_search|
-      # 2.1 Set url
-      request_hash = @former_address.merge(level: level_of_search, api_key: @api_key, language: @language)
-      request_hash.delete(:city) unless valid_city?
-      request_hash.delete(:state) unless valid_state?
-      request_url = Url.new(request_hash)
-      # 2.2 Make call to google
-      @response = Request.new(request_url.formulate)
-      # 2.3 If the address succeeded:
-      if @response.success?
-        @response.result['certainty'] = evaluate_certainty(level_of_search)
-        break
-      end
-    end
+    @response = map_api_manager.new({address: @address, map_apis: @map_apis}).process
   end
 
   def evaluate_certainty(level)
@@ -136,7 +122,7 @@ class AddressGeocoder # :nodoc:
   end
 
   def values_changed?
-    # True If no previous google response stored
+    # True If no previous third_party_api response stored
     return true unless @response
     # Return the comparison of current and former addresses
     current_address = {
