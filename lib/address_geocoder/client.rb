@@ -1,4 +1,3 @@
-require 'address_geocoder/countries'
 require 'address_geocoder/error'
 
 # Namespace for classes and modules directly relating to the gem
@@ -56,7 +55,7 @@ module AddressGeocoder
     end
 
     def match_country
-      Countries::LIST[@country] # returns matched country from countries yaml
+      COUNTRIES[@country] # returns matched country from countries yaml
     end
 
     def values_changed?

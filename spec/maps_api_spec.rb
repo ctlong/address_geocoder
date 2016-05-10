@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe MapsApi do
+describe MapsApi, type: :libraries do
   describe 'when initialized' do
     it 'should throw an error if the country is not recognized' do
       expect { MapsApi::Google::Client.new(country: 'United States', city: 'Phoenix') }.to raise_error

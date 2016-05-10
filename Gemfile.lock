@@ -3,6 +3,7 @@ GEM
   specs:
     coderay (1.1.0)
     diff-lcs (1.2.5)
+    docile (1.1.5)
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -26,6 +27,11 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    simplecov (0.11.2)
+      docile (~> 1.1.0)
+      json (~> 1.8)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
     slop (3.6.0)
     yard (0.8.7.6)
 
@@ -36,6 +42,7 @@ DEPENDENCIES
   httparty (~> 0.13.7)
   pry (~> 0.10.3)
   rspec (~> 3.4.0)
+  simplecov
   yard
 
 BUNDLED WITH

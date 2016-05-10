@@ -7,3 +7,7 @@ group :development, :test do
   gem 'rspec', '~> 3.4.0'
   gem 'yard'
 end
+
+group :test do
+  gem 'simplecov', require: false
+end

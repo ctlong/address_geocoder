@@ -1,3 +1,15 @@
 .DS_Store
 lib/.DS_Store
 .env
+
+# RSpec
+.rspec
+/log
+/tmp
+
+# Simplecov
+coverage
+
+# Yardoc
+/.yardoc
+/doc
