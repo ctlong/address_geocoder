@@ -60,8 +60,13 @@ module AddressGeocoder
     # @return [Boolean] true, or false if address is likely to be invalid
     def valid_address?
       check_country
-      call if values_changed?
+      if values_changed?
+        call
+        # @url_generator.generate_url
+        # @requester.make_call
+      end
       @response.success? && @response.result['certainty']
+      # @requester.success? && @parser.certain?
     end
 
     # Gathers a list of matching addresses from the maps API
@@ -85,17 +90,22 @@ module AddressGeocoder
       raise NeedToOveride, 'call'
     end
 
-    private
-
-    # Assigns the entered variables to their proper instance variables
+    # @abstract Assigns the entered variables to their proper instance variables
     # @return [void]
     def assign_initial(args)
+      unless @url_generator #&& @requester && @parser
+        raise NeedToOveride, 'assign_initial'
+      end
       Client.instance_methods(false).each do |var|
         next if var.to_s[/\=/].nil?
         title = var.to_s.tr('=', '')
-        instance_variable_set("@#{title}", args[title.to_sym].to_s)
+        value = args[title.to_sym].to_s
+        next unless value
+        instance_variable_set("@#{title}", value)
       end
     end
+
+    private
 
     # Determines whether the given alpha2 exists in the countries yaml
     # @raise [ArgumentError] if the given value is not an alpha2 or does not

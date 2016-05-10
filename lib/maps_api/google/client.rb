@@ -16,23 +16,31 @@ module MapsApi
       # Initiates a call to GoogleMaps' Geocoding API
       # @return (see AddressGeocoder::Client#call)
       def call
-        # 1 initialize former address
         @former_address = { city: @city, street: @street, country: @country, postal_code: @postal_code, state: @state }
-        # 2 Loop through the levels (once one works break the loop)
         call_levels.each do |level_of_search|
-          # 2.1 Set url
-          request_hash = @former_address.merge(level: level_of_search, api_key: @api_key, language: @language)
-          request_hash.delete(:city) unless valid_city?
-          request_hash.delete(:state) unless valid_state?
-          request_url = UrlGenerator.new(request_hash)
-          # 2.2 Make call to google
-          @response = Requester.new(request_url.formulate)
-          # 2.3 If the address succeeded:
+          # Set url
+          request_hash = { address: @former_address.dup, level: level_of_search,
+                           api_key: @api_key, language: @language,
+                           street: @former_address[:street] }
+          request_hash[:address].delete(:street)
+          request_hash[:address].delete(:city) unless valid_city?
+          request_hash[:address].delete(:state) unless valid_state?
+          @url_generator = UrlGenerator.new(request_hash)
+          # Make call to google
+          @response = Requester.new(@url_generator.generate_url)
+          # If the address succeeded:
           if @response.success?
             @response.result['certainty'] = evaluate_certainty(level_of_search)
             break
           end
         end
+      end
+
+      def assign_initial(args)
+        @url_generator = UrlGenerator.new
+        # @requester     = Requester.new
+        # @parser        = Parser.new
+        super args
       end
 
       private

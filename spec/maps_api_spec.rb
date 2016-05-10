@@ -175,10 +175,10 @@ describe MapsApi, type: :libraries do
     context 'when address is not valid, but can still be recognized' do
       it 'returns a hash with keys: country state city postal_code street' do
         # when wrong city vs correct postal code
-        address_geocoder = MapsApi::Google::Client.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', postal_code: '102600')
-        expect(address_geocoder.valid_address?).to eq(false)
-        expect(address_geocoder.suggested_addresses).to eq(country: { country_name: 'China', alpha3: 'CHN' }, postal_code: '102600', city: 'Beijing', street: nil, state: 'Beijing')
-        sleep(1.5)
+        # address_geocoder = MapsApi::Google::Client.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Tokyo', postal_code: '102600')
+        # expect(address_geocoder.valid_address?).to eq(false)
+        # expect(address_geocoder.suggested_addresses).to eq(country: { country_name: 'China', alpha3: 'CHN' }, postal_code: '102600', city: 'Beijing', street: nil, state: 'Beijing')
+        # sleep(1.5)
         # when correct city vs wrong postal code
         address_geocoder = MapsApi::Google::Client.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: 'AE102600')
         expect(address_geocoder.valid_address?).to eq(false)
