@@ -1,4 +1,6 @@
-class AddressGeocoder
+require 'base'
+
+module Base
   class Error < RuntimeError # Base Error of AddressGeocoder
     attr_accessor :code
   end

@@ -1,6 +1,7 @@
 require 'uri'
+require 'base'
 
-class AddressGeocoder
+module Base
   class Url # :nodoc:
     GOOGLE_TITLES = {
       country: 'country',

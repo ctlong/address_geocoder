@@ -1,6 +1,7 @@
 require 'httparty'
+require 'base'
 
-class AddressGeocoder
+module Base
   class Request # :nodoc:
     attr_accessor :result
 
