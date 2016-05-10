@@ -3,6 +3,7 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for interacting with maps APIs
   class Client
+    # The regex used to check the state and city for validity
     REGEX = /\A[a-zA-Z\ ]*\z/
 
     # @!attribute country
@@ -128,14 +129,21 @@ module AddressGeocoder
       current_address != @former_address
     end
 
+    # Determines whether the given city is valid or not
+    # @return [Boolean] true, or false if the city name does not pass the Regex
     def valid_city?
-      @city && (@city[REGEX] != '') # nil if city name does not match Regex
+      @city && (@city[REGEX] != '')
     end
 
+    # Determines whether the given state is valid or not
+    # @return [Boolean] true, or false if the state name does not pass the Regex
     def valid_state?
-      @state && (@state[REGEX] != '') # nil if city name does not match Regex
+      @state && (@state[REGEX] != '')
     end
 
+    # Determines whether the given postal code is valid or not
+    # @return [Boolean] true, or false if the postal code does not pass the
+    #   specs
     def valid_postal_code?
       # 1. Remove spaces
       postal_code = @postal_code.to_s.tr(' ', '')
@@ -146,7 +154,6 @@ module AddressGeocoder
       # 4. False if postal code is all one char (if that char isn't 1-9)
       all_one_char = postal_code.tr(postal_code[0], '') == ''
       return false if all_one_char && !(postal_code[0].to_i.in? Array(1..9))
-      # 5. Else true
       true
     end
   end
