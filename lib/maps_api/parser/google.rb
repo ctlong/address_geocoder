@@ -1,6 +1,4 @@
-require 'base'
-
-module Base
+module MapsApi
   module Parser
     class Google # :nodoc:
       CITY_TYPES   = %w(neighborhood locality sublocality).freeze

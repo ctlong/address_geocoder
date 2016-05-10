@@ -1,7 +1,7 @@
 require 'httparty'
-require 'base'
+require 'maps_api/error'
 
-module Base
+module MapsApi
   class Request # :nodoc:
     attr_accessor :result
 

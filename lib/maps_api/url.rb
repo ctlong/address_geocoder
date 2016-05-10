@@ -1,7 +1,6 @@
 require 'uri'
-require 'base'
 
-module Base
+module MapsApi
   class Url # :nodoc:
     GOOGLE_TITLES = {
       country: 'country',

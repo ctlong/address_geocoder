@@ -1,0 +1,6 @@
+require 'yaml'
+require 'maps_api/parser'
+require 'maps_api/request'
+require 'maps_api/error'
+require 'maps_api/url'
+require 'maps_api/google'
