@@ -2,8 +2,7 @@ require 'httparty'
 require 'address_geocoder/error'
 
 module AddressGeocoder
-  # Abstract base class for making requests to maps APIs
-  # @abstract
+  # @abstract Abstract base class for making requests to maps APIs
   class Requester
     attr_accessor :result
 
@@ -19,6 +18,8 @@ module AddressGeocoder
       end
     end
 
+    # Abstract base method for initiating a call to a maps API
+    # @abstract
     def success?
       raise NeedToOveride, 'success?'
     end

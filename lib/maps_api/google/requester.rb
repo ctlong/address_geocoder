@@ -6,7 +6,7 @@ module MapsApi
     class Requester < ::AddressGeocoder::Requester
       # Determines whether the request to Google Maps' Geocoding API was a
       # success
-      # @return [true, false] true, or false if the request failed
+      # @return [Boolean] true, or false if the request failed
       def success?
         return false unless @result['status'] == 'OK'
         return false unless @result['results'][0]['address_components'].length > 1

@@ -7,7 +7,10 @@ module MapsApi
   module Google
     # Class for interacting with Google Maps API
     class Client < ::AddressGeocoder::Client
-      CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3, remove_state: 4 }.freeze
+      # The call levels to cycle through when using postal code
+      CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3,
+                            remove_state: 4 }.freeze
+      # The call levels to cycle through when not using postal code
       CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
 
       # Initiates a call to GoogleMaps' Geocoding API

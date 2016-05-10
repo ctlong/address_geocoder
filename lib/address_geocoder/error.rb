@@ -1,6 +1,5 @@
 module AddressGeocoder
-  # Abstract base class for errors
-  # @abstract
+  # @abstract Abstract base class for errors
   class Error < RuntimeError
   end
 

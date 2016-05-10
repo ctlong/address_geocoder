@@ -1,6 +1,5 @@
 module AddressGeocoder
-  # Abstract base class for parsing maps API responses
-  # @abstract
+  # @abstract Abstract base class for parsing maps API responses
   class Parser
     def initialize(fields, suggested_address)
       @fields            = fields

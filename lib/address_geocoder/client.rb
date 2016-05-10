@@ -1,13 +1,46 @@
 require 'address_geocoder/error'
 
 module AddressGeocoder
-  # Abstract base class for interacting with maps APIs
-  # @abstract
+  # @abstract Abstract base class for interacting with maps APIs
   class Client
     REGEX = /\A[a-zA-Z\ ]*\z/
-    attr_accessor :api_key, :country, :state, :city, :postal_code, :street,
-                  :language
-    attr_reader :response, :former_address
+
+    # @!attribute country
+    # @return [String, Hash] An alpha2 of the country or a country object from
+    #   the yaml
+    attr_accessor :country
+
+    # @!attribute api_key
+    # @return [String] the user's key to the chosen maps API
+    attr_accessor :api_key
+
+    # @!attribute state
+    # @return [String] the state of the address to be validated
+    attr_accessor :state
+
+    # @!attribute city
+    # @return [String] the city of the address to be validated
+    attr_accessor :city
+
+    # @!attribute postal_code
+    # @return [String] the postal code of the address to be validated
+    attr_accessor :postal_code
+
+    # @!attribute street
+    # @return [String] the street of the address to be validated
+    attr_accessor :street
+
+    # @!attribute language
+    # @return [String] the language in which to return the address
+    attr_accessor :language
+
+    # @!attribute [r] response
+    # @return [String] the response from the maps API
+    attr_reader :response
+
+    # @!attribute [r] former_address
+    # @return [String] the address that was last called from the maps API
+    attr_reader :former_address
 
     def initialize(args = {})
       assign_initial(args)
@@ -17,7 +50,7 @@ module AddressGeocoder
     end
 
     # Determines whether an address is likely to be valid or not
-    # @return [true, false] true, or false if address is likely to be invalid
+    # @return [Boolean] true, or false if address is likely to be invalid
     def valid_address?
       # 1. If address values have changed call api
       call if values_changed?
@@ -65,7 +98,7 @@ module AddressGeocoder
     end
 
     # Determines whether the inputted address values have changed in any way
-    # @return [true, false] true, or false if nothing has been called or the
+    # @return [Boolean] true, or false if nothing has been called or the
     # current address information does not match the information from when the
     # maps API was last called
     def values_changed?

@@ -1,8 +1,7 @@
 require 'uri'
 
 module AddressGeocoder
-  # Abstract base class for generatoring URLs to call maps APIs
-  # @abstract
+  # @abstract Abstract base class for generatoring URLs to call maps APIs
   class UrlGenerator
     def initialize(opts = {})
       @street   = opts[:street]
