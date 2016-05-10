@@ -1,9 +1,6 @@
 require 'spec_helper'
 describe MapsApi, type: :libraries do
   describe 'when initialized' do
-    it 'should throw an error if the country is not recognized' do
-      expect { MapsApi::Google::Client.new(country: 'United States', city: 'Phoenix') }.to raise_error
-    end
     it 'should have attr accessors' do
       address_geocoder = MapsApi::Google::Client.new(api_key: '12345', country: 'US', state: 'CO', street: '301 First St.', city: 'Crested Butte', postal_code: '10022')
 
@@ -20,6 +17,9 @@ describe MapsApi, type: :libraries do
   end
 
   describe '#valid_address?' do
+    it 'should throw an error if the country is not recognized' do
+      expect { MapsApi::Google::Client.new(country: 'United States', city: 'Phoenix').valid_address? }.to raise_error
+    end
     context 'when address can be not recognized' do
       it 'returns false' do
         # when only city
@@ -142,7 +142,10 @@ describe MapsApi, type: :libraries do
     end
   end
 
-  describe '#suggested_address' do
+  describe '#suggested_addresses' do
+    it 'should throw an error if the country is not recognized' do
+      expect { MapsApi::Google::Client.new(country: 'United States', city: 'Phoenix').suggested_addresses }.to raise_error
+    end
     context 'when address can be not recogized' do
       it 'returns false' do
         # when only city

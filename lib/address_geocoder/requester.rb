@@ -18,8 +18,8 @@ module AddressGeocoder
       end
     end
 
-    # Abstract base method for initiating a call to a maps API
-    # @abstract
+    # @abstract Abstract base method for initiating a call to a maps API
+    # @return [Boolean] true, or false if the request failed
     def success?
       raise NeedToOveride, 'success?'
     end

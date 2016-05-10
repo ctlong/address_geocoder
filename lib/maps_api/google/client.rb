@@ -14,7 +14,7 @@ module MapsApi
       CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
 
       # Initiates a call to GoogleMaps' Geocoding API
-      # @return [void]
+      # @return (see AddressGeocoder::Client#call)
       def call
         # 1 initialize former address
         @former_address = { city: @city, street: @street, country: @country, postal_code: @postal_code, state: @state }

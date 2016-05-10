@@ -6,7 +6,7 @@ module AddressGeocoder
     REGEX = /\A[a-zA-Z\ ]*\z/
 
     # @!attribute country
-    # @return [String, Hash] An alpha2 of the country or a country object from
+    # @return [String, Hash] a country's alpha2 or a country object from
     #   the yaml
     attr_accessor :country
 
@@ -35,34 +35,39 @@ module AddressGeocoder
     attr_accessor :language
 
     # @!attribute [r] response
-    # @return [String] the response from the maps API
+    # @return [Hash] the response from the maps API
     attr_reader :response
 
     # @!attribute [r] former_address
-    # @return [String] the address that was last called from the maps API
+    # @return [Hash] the address that was last called from the maps API
     attr_reader :former_address
 
+    # @param args [Hash] arguments to pass to the class
+    # @option args [String] :country a country's alpha2
+    # @option args [String] :api_key the user's key to the chosen maps API
+    # @option args [String] :state the state of the address to be validated
+    # @option args [String] :city the city of the address to be validated
+    # @option args [String] :postal_code the postal code of the address to be
+    #   validated
+    # @option args [String] :street the street of the address to be validated
+    # @option args [String] :language (en) the language in which to return the address
     def initialize(args = {})
       assign_initial(args)
-      unless @country && @country[/\A[a-zA-Z]{2}\z/] && match_country
-        raise ArgumentError, 'Invalid country'
-      end
     end
 
     # Determines whether an address is likely to be valid or not
     # @return [Boolean] true, or false if address is likely to be invalid
     def valid_address?
-      # 1. If address values have changed call api
+      check_country
       call if values_changed?
-      # 2. Return T/F depending on success of call and certainty of success
       @response.success? && @response.result['certainty']
     end
 
-    # Gathers a list of improved addresses
+    # Gathers a list of matching addresses from the maps API
+    # @return [Array<Hash>] a list of matching addresses
     def suggested_addresses
-      # 1. If address values have changed call api
+      check_country
       call if values_changed?
-      # 2. If response failed return false
       return false unless @response.success?
       # 3. Initialize refined_address
       country_wo_postal = match_country.reject { |k| k == :postal_code }
@@ -73,8 +78,8 @@ module AddressGeocoder
       parser.parse_google_response
     end
 
-    # Abstract base method for initiating a call to a maps API
-    # @abstract
+    # @abstract Abstract base method for initiating a call to a maps API
+    # @return [void]
     def call
       raise NeedToOveride, 'call'
     end
@@ -91,7 +96,17 @@ module AddressGeocoder
       end
     end
 
-    # Determines whether the inputted country exists in countries yaml
+    # Determines whether the given alpha2 exists in the countries yaml
+    # @raise [ArgumentError] if the given value is not an alpha2 or does not
+    #   match any country in the yaml
+    # @return [void]
+    def check_country
+      unless @country && @country[/\A[a-zA-Z]{2}\z/] && match_country
+        raise ArgumentError, 'Invalid country'
+      end
+    end
+
+    # Attempts to match the given alpha2 to a country in the countries yaml
     # @return [Hash, nil] A country object, or nil if no country matched
     def match_country
       COUNTRIES[@country]
