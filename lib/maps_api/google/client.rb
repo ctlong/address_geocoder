@@ -1,6 +1,7 @@
 require 'address_geocoder/client'
 require 'maps_api/google/parser'
 require 'maps_api/google/requester'
+require 'maps_api/google/url_generator'
 
 # Namespace for classes and modules that handling API communication
 # @since 0.0.1
@@ -23,7 +24,7 @@ module MapsApi
           request_hash = @former_address.merge(level: level_of_search, api_key: @api_key, language: @language)
           request_hash.delete(:city) unless valid_city?
           request_hash.delete(:state) unless valid_state?
-          request_url = MapsApi::Url.new(request_hash)
+          request_url = UrlGenerator.new(request_hash)
           # 2.2 Make call to google
           @response = Requester.new(request_url.formulate)
           # 2.3 If the address succeeded:
