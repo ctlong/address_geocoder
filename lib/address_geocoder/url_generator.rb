@@ -8,10 +8,6 @@ module AddressGeocoder
     # @return (see AddressGeocoder::Client#street)
     attr_accessor :street
 
-    # @!attribute level
-    # @return [Integer] the level at which to generate the URL
-    attr_accessor :level
-
     # @!attribute api_key
     # @return (see AddressGeocoder::Client#api_key)
     attr_accessor :api_key
@@ -24,12 +20,11 @@ module AddressGeocoder
     # @return [Hash]
     attr_accessor :address
 
-    def initialize(opts = {})
-      @street   = opts[:street]
-      @level    = opts[:level]
-      @api_key  = opts[:api_key]
-      @language = opts[:language]
-      @address  = opts[:address]
+    def initialize(args = {})
+      @street   = args[:street]
+      @api_key  = args[:api_key]
+      @language = args[:language]
+      @address  = args[:address]
     end
 
     # @abstract Abstract base method for generating a URL with which to call a

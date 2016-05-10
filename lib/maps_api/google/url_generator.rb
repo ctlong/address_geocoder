@@ -13,7 +13,17 @@ module MapsApi
       }.freeze
 
       # Google accepted language codes
+      # @see https://developers.google.com/maps/faq#languagesupport
       LANGUAGES = ['zh-CN', 'ja', 'es', 'ko', 'ru', 'de', 'fr'].freeze
+
+      # @!attribute [w] level
+      # @return [Integer] the level at which to generate the URL
+      attr_writer :level
+
+      def initialize(args = {})
+        @level = args[:level]
+        super args
+      end
 
       # Generates a URL with which to call Google Maps' Geocoding API
       # @return (see AddressGeocoder::UrlGenerator#generate_url)
