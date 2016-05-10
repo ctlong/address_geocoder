@@ -1,9 +1,11 @@
-# Namespace for classes and modules directly relating to the gem
-# @since 0.0.1
 module AddressGeocoder
-  class Error < RuntimeError # Base Error of AddressGeocoder
+  # Abstract base class for errors
+  # @abstract
+  class Error < RuntimeError
   end
 
+  # Class that defines an error, to be thrown when a method needs to be
+  # overwritten by a child class.
   class NeedToOveride < Error
     def initialize(msg = nil)
       @msg = msg
@@ -15,7 +17,8 @@ module AddressGeocoder
     end
   end
 
-  # Specific Error for failure in connection to a third party map API
+  # Class that defines an error representing a failure in connection with a
+  # third party Maps API
   class ConnectionError < Error
     def initialize(msg = nil)
       @msg = msg

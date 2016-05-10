@@ -1,12 +1,9 @@
 require 'httparty'
 require 'address_geocoder/error'
 
-# Namespace for classes and modules directly relating to the gem
-# @since 0.0.1
 module AddressGeocoder
-  # Abstract base class for making requests to Maps APIs
+  # Abstract base class for making requests to maps APIs
   # @abstract
-  # @since 0.0.1
   class Requester
     attr_accessor :result
 

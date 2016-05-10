@@ -2,6 +2,7 @@ require 'address_geocoder/url_generator'
 
 module MapsApi
   module Google
+    # Class for generatoring URLs to call Google Maps API
     class UrlGenerator < ::AddressGeocoder::UrlGenerator
       GOOGLE_TITLES = {
         country: 'country',

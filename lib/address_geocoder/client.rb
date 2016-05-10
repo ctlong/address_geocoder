@@ -1,11 +1,8 @@
 require 'address_geocoder/error'
 
-# Namespace for classes and modules directly relating to the gem
-# @since 0.0.1
 module AddressGeocoder
-  # Abstract base class for calling maps APIs
+  # Abstract base class for interacting with maps APIs
   # @abstract
-  # @since 0.0.1
   class Client
     REGEX = /\A[a-zA-Z\ ]*\z/
     attr_accessor :api_key, :country, :state, :city, :postal_code, :street,
@@ -19,6 +16,8 @@ module AddressGeocoder
       end
     end
 
+    # Determines whether an address is likely to be valid or not
+    # @return [true, false] true, or false if address is likely to be invalid
     def valid_address?
       # 1. If address values have changed call api
       call if values_changed?
@@ -26,6 +25,7 @@ module AddressGeocoder
       @response.success? && @response.result['certainty']
     end
 
+    # Gathers a list of improved addresses
     def suggested_addresses
       # 1. If address values have changed call api
       call if values_changed?
@@ -40,12 +40,16 @@ module AddressGeocoder
       parser.parse_google_response
     end
 
+    # Abstract base method for initiating a call to a maps API
+    # @abstract
     def call
       raise NeedToOveride, 'call'
     end
 
     private
 
+    # Assigns the entered variables to their proper instance variables
+    # @return [void]
     def assign_initial(args)
       Client.instance_methods(false).each do |var|
         next if var.to_s[/\=/].nil?
@@ -54,14 +58,18 @@ module AddressGeocoder
       end
     end
 
+    # Determines whether the inputted country exists in countries yaml
+    # @return [Hash, nil] A country object, or nil if no country matched
     def match_country
-      COUNTRIES[@country] # returns matched country from countries yaml
+      COUNTRIES[@country]
     end
 
+    # Determines whether the inputted address values have changed in any way
+    # @return [true, false] true, or false if nothing has been called or the
+    # current address information does not match the information from when the
+    # maps API was last called
     def values_changed?
-      # True If no previous google response stored
       return true unless @response
-      # Return the comparison of current and former addresses
       current_address = {
         city: @city,
         street: @street,

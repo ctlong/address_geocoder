@@ -1,12 +1,12 @@
 require 'address_geocoder/requester'
 
-# Namespace for classes and modules that handling API communication
-# @since 0.0.1
 module MapsApi
-  # Namespace for classes that handle Google
-  # @since 0.0.1
   module Google
+    # Class for making requests to Google Maps API
     class Requester < ::AddressGeocoder::Requester
+      # Determines whether the request to Google Maps' Geocoding API was a
+      # success
+      # @return [true, false] true, or false if the request failed
       def success?
         return false unless @result['status'] == 'OK'
         return false unless @result['results'][0]['address_components'].length > 1

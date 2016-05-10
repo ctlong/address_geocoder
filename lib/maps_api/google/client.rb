@@ -3,17 +3,14 @@ require 'maps_api/google/parser'
 require 'maps_api/google/requester'
 require 'maps_api/google/url_generator'
 
-# Namespace for classes and modules that handling API communication
-# @since 0.0.1
 module MapsApi
-  # Namespace for classes that handle Google
-  # @since 0.0.1
   module Google
+    # Class for interacting with Google Maps API
     class Client < ::AddressGeocoder::Client
       CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3, remove_state: 4 }.freeze
       CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
 
-      # Calls GoogleMaps' Geocoding API
+      # Initiates a call to GoogleMaps' Geocoding API
       # @return [void]
       def call
         # 1 initialize former address
