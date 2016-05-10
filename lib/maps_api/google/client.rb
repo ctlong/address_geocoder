@@ -1,5 +1,6 @@
 require 'address_geocoder/client'
 require 'maps_api/google/parser'
+require 'maps_api/google/requester'
 
 # Namespace for classes and modules that handling API communication
 # @since 0.0.1
@@ -7,7 +8,6 @@ module MapsApi
   # Namespace for classes that handle Google
   # @since 0.0.1
   module Google
-    # Namespace for classes that handle Google
     class Client < ::AddressGeocoder::Client
       CYCLEWITHPOSTAL   = { all: 1, remove_street: 2, remove_city: 3, remove_state: 4 }.freeze
       CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
@@ -25,7 +25,7 @@ module MapsApi
           request_hash.delete(:state) unless valid_state?
           request_url = MapsApi::Url.new(request_hash)
           # 2.2 Make call to google
-          @response = MapsApi::Request.new(request_url.formulate)
+          @response = Requester.new(request_url.formulate)
           # 2.3 If the address succeeded:
           if @response.success?
             @response.result['certainty'] = evaluate_certainty(level_of_search)

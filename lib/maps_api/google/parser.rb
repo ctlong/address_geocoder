@@ -11,11 +11,6 @@ module MapsApi
       STATE_TYPES  = %w(administrative_area_level_4 administrative_area_level_3 administrative_area_level_2).freeze
       POSTAL_TYPES = %w(postal_code postal_code_prefix).freeze
 
-      def initialize(fields, suggested_address)
-        @fields            = fields
-        @suggested_address = suggested_address
-      end
-
       def parse_google_response
         @fields.each { |field| parse_field(field) }
         @suggested_address.delete(:switch)

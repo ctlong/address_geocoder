@@ -137,7 +137,7 @@ describe MapsApi, type: :libraries do
       it 'will raise an error' do
         allow(HTTParty).to receive(:get).and_raise{ 'mocking a connection error' }
         address_geocoder = MapsApi::Google::Client.new(api_key: ENV['AddressGeocoderApiKey'], country: 'CN', city: 'Beijing', postal_code: '100050')
-        expect{ address_geocoder.valid_address? }.to raise_error(MapsApi::ConnectionError) { 'Could not connect to GoogleAPI' }
+        expect{ address_geocoder.valid_address? }.to raise_error(AddressGeocoder::ConnectionError) { 'Could not connect to GoogleAPI' }
       end
     end
   end
