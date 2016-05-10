@@ -35,7 +35,7 @@ module AddressGeocoder
       country_wo_postal = match_country.reject { |k| k == :postal_code }
       refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
       # 4. Pass refined address and google response to parser
-      parser = MapsApi::Parser::Google.new(@response.result['results'][0]['address_components'], refined_address)
+      parser = MapsApi::Google::Parser.new(@response.result['results'][0]['address_components'], refined_address)
       # 5. return parsed google response as suggested address
       parser.parse_google_response
     end

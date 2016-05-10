@@ -1,6 +1,12 @@
+require 'address_geocoder/parser'
+
+# Namespace for classes and modules that handling API communication
+# @since 0.0.1
 module MapsApi
-  module Parser
-    class Google # :nodoc:
+  # Namespace for classes that handle Google
+  # @since 0.0.1
+  module Google
+    class Parser < ::AddressGeocoder::Parser
       CITY_TYPES   = %w(neighborhood locality sublocality).freeze
       STATE_TYPES  = %w(administrative_area_level_4 administrative_area_level_3 administrative_area_level_2).freeze
       POSTAL_TYPES = %w(postal_code postal_code_prefix).freeze

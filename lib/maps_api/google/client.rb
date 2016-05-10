@@ -1,4 +1,5 @@
 require 'address_geocoder/client'
+require 'maps_api/google/parser'
 
 # Namespace for classes and modules that handling API communication
 # @since 0.0.1
@@ -37,15 +38,15 @@ module MapsApi
 
       def evaluate_certainty(level)
         # False if only returned country
-        return false if MapsApi::Parser::Google.just_country?(@response)
+        return false if Parser.just_country?(@response)
         # False if country is not inputted country
-        return false if !MapsApi::Parser::Google.correct_country?(@response, @country)
+        return false if !Parser.correct_country?(@response, @country)
         # False if had valid city but level didn't include city
-        return false if MapsApi::Parser::Google.value_present?(level, [3, 4, 7], valid_city?)
+        return false if Parser.value_present?(level, [3, 4, 7], valid_city?)
         # False if had valid state but level didn't include state
-        return false if MapsApi::Parser::Google.value_present?(level, [4], valid_state?)
+        return false if Parser.value_present?(level, [4], valid_state?)
         # False if had valid postal code but level didn't include postal code
-        return false if MapsApi::Parser::Google.value_present?(level, [5, 6, 7], valid_postal_code?)
+        return false if Parser.value_present?(level, [5, 6, 7], valid_postal_code?)
         # Else true
         true
       end
