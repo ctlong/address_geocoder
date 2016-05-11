@@ -48,7 +48,7 @@ module AddressGeocoder
         # @url_generator.generate_url
         # @requester.make_call
       end
-      @response.success? && @response.result['certainty']
+      @requester.success? && @requester.result['certainty']
       # @requester.success? && @parser.certain?
     end
 
@@ -57,12 +57,12 @@ module AddressGeocoder
     def suggested_addresses
       check_country
       call if values_changed?
-      return false unless @response.success?
+      return false unless @requester.success?
       # 3. Initialize refined_address
       country_wo_postal = match_country.reject { |k| k == :postal_code }
       refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
       # 4. Pass refined address and google response to parser
-      parser = MapsApi::Google::Parser.new(@response.result['results'][0]['address_components'], refined_address)
+      parser = MapsApi::Google::Parser.new(@requester.result['results'][0]['address_components'], refined_address)
       # 5. return parsed google response as suggested address
       parser.parse_google_response
     end
@@ -85,7 +85,7 @@ module AddressGeocoder
     # @option args [String] :language (en) the language in which to return the address
     # @return [void]
     def assign_initial(args)
-      unless @url_generator # && @requester && @parser
+      unless @url_generator && @requester # && @parser
         raise NeedToOveride, 'assign_initial'
       end
       Client.instance_methods(false).each do |var|

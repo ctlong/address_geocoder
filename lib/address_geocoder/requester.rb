@@ -6,16 +6,11 @@ module AddressGeocoder
   class Requester
     attr_accessor :result
 
-    def initialize(url)
-      attempts = 0
-      begin
-        @result = HTTParty.get(url)
-      rescue
-        sleep(0.5)
-        attempts += 1
-        retry if attempts <= 5
-        failure('Could not connect to GoogleAPI')
-      end
+    def initialize
+    end
+
+    def make_call
+      raise NeedToOveride, 'make_call'
     end
 
     # @abstract Abstract base method for initiating a call to a maps API

@@ -29,10 +29,11 @@ module MapsApi
           @url_generator.level   = level_of_search
           @url_generator.address = address.dup
           # Make call to google
-          @response = Requester.new(@url_generator.generate_url)
+          @requester.url_generator = @url_generator
+          @requester.make_call
           # If the address succeeded:
-          if @response.success?
-            @response.result['certainty'] = evaluate_certainty(level_of_search)
+          if @requester.success?
+            @requester.result['certainty'] = evaluate_certainty(level_of_search)
             break
           end
         end
@@ -43,7 +44,7 @@ module MapsApi
       # @return (see AddressGeocoder::Client#assign_initial)
       def assign_initial(args)
         @url_generator = UrlGenerator.new
-        # @requester     = Requester.new
+        @requester     = Requester.new
         # @parser        = Parser.new
         super args
       end
@@ -52,9 +53,9 @@ module MapsApi
 
       def evaluate_certainty(level)
         # False if only returned country
-        return false if Parser.just_country?(@response)
+        return false if Parser.just_country?(@requester)
         # False if country is not inputted country
-        return false if !Parser.correct_country?(@response, @country)
+        return false if !Parser.correct_country?(@requester, @country)
         # False if had valid city but level didn't include city
         return false if Parser.value_present?(level, [3, 4, 7], valid_city?)
         # False if had valid state but level didn't include state
