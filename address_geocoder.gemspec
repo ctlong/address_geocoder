@@ -14,4 +14,6 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.files       = `git ls-files`.split("\n")
+
+  s.add_dependency 'httparty', ['~> 0.13.7']
 end

@@ -16,16 +16,18 @@ module MapsApi
       # Initiates a call to GoogleMaps' Geocoding API
       # @return (see AddressGeocoder::Client#call)
       def call
-        @former_address = { city: @city, street: @street, country: @country, postal_code: @postal_code, state: @state }
+        @former_address = { city: @city, street: @street, country: @country,
+                            postal_code: @postal_code, state: @state }
+        address = @former_address.dup
+        address.delete(:street)
+        address.delete(:city)  unless valid_city?
+        address.delete(:state) unless valid_state?
+        @url_generator = UrlGenerator.new(address: address, api_key: @api_key,
+                                          language: @language, street: @street)
         call_levels.each do |level_of_search|
           # Set url
-          request_hash = { address: @former_address.dup, level: level_of_search,
-                           api_key: @api_key, language: @language,
-                           street: @former_address[:street] }
-          request_hash[:address].delete(:street)
-          request_hash[:address].delete(:city) unless valid_city?
-          request_hash[:address].delete(:state) unless valid_state?
-          @url_generator = UrlGenerator.new(request_hash)
+          @url_generator.level   = level_of_search
+          @url_generator.address = address.dup
           # Make call to google
           @response = Requester.new(@url_generator.generate_url)
           # If the address succeeded:
@@ -36,6 +38,9 @@ module MapsApi
         end
       end
 
+      # Assigns the entered variables to their proper instance variables
+      # @param (see AddressGeocoder::Client#assign_initial)
+      # @return (see AddressGeocoder::Client#assign_initial)
       def assign_initial(args)
         @url_generator = UrlGenerator.new
         # @requester     = Requester.new

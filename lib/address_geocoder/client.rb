@@ -10,48 +10,31 @@ module AddressGeocoder
     # @return [String, Hash] a country's alpha2 or a country object from
     #   the yaml
     attr_accessor :country
-
     # @!attribute api_key
     # @return [String] the user's key to the chosen maps API
     attr_accessor :api_key
-
     # @!attribute state
     # @return [String] the state of the address to be validated
     attr_accessor :state
-
     # @!attribute city
     # @return [String] the city of the address to be validated
     attr_accessor :city
-
     # @!attribute postal_code
     # @return [String] the postal code of the address to be validated
     attr_accessor :postal_code
-
     # @!attribute street
     # @return [String] the street of the address to be validated
     attr_accessor :street
-
     # @!attribute language
     # @return [String] the language in which to return the address
     attr_accessor :language
-
     # @!attribute [r] response
     # @return [Hash] the response from the maps API
     attr_reader :response
-
     # @!attribute [r] former_address
     # @return [Hash] the address that was last called from the maps API
     attr_reader :former_address
 
-    # @param args [Hash] arguments to pass to the class
-    # @option args [String] :country a country's alpha2
-    # @option args [String] :api_key the user's key to the chosen maps API
-    # @option args [String] :state the state of the address to be validated
-    # @option args [String] :city the city of the address to be validated
-    # @option args [String] :postal_code the postal code of the address to be
-    #   validated
-    # @option args [String] :street the street of the address to be validated
-    # @option args [String] :language (en) the language in which to return the address
     def initialize(args = {})
       assign_initial(args)
     end
@@ -91,9 +74,18 @@ module AddressGeocoder
     end
 
     # @abstract Assigns the entered variables to their proper instance variables
+    # @param args [Hash] arguments to pass to the class
+    # @option args [String] :country a country's alpha2
+    # @option args [String] :api_key the user's key to the chosen maps API
+    # @option args [String] :state the state of the address to be validated
+    # @option args [String] :city the city of the address to be validated
+    # @option args [String] :postal_code the postal code of the address to be
+    #   validated
+    # @option args [String] :street the street of the address to be validated
+    # @option args [String] :language (en) the language in which to return the address
     # @return [void]
     def assign_initial(args)
-      unless @url_generator #&& @requester && @parser
+      unless @url_generator # && @requester && @parser
         raise NeedToOveride, 'assign_initial'
       end
       Client.instance_methods(false).each do |var|

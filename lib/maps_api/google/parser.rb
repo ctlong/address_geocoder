@@ -4,8 +4,11 @@ module MapsApi
   module Google
     # Class for parsing Google Maps API responses
     class Parser < ::AddressGeocoder::Parser
+      # Google's attribute title for cities
       CITY_TYPES   = %w(neighborhood locality sublocality).freeze
+      # Google's attribute titles for states
       STATE_TYPES  = %w(administrative_area_level_4 administrative_area_level_3 administrative_area_level_2).freeze
+      # Google's attribute titles for postal codes
       POSTAL_TYPES = %w(postal_code postal_code_prefix).freeze
 
       def parse_google_response
