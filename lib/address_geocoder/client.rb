@@ -3,9 +3,6 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for interacting with maps APIs
   class Client
-    # The regex used to check the state and city for validity
-    REGEX = /\A[a-zA-Z\ ]*\z/
-
     # @!attribute country
     # @return [String, Hash] a country's alpha2 or a country object from
     #   the yaml
