@@ -4,11 +4,15 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for making requests to maps APIs
   class Requester
-    attr_accessor :result
+    # @!attribute [r] result
+    # @return [Hash] the result of a request to a maps API
+    attr_reader :result
 
     def initialize
     end
 
+    # Make a call to a maps API
+    # @return [void]
     def make_call
       raise NeedToOveride, 'make_call'
     end
@@ -19,7 +23,8 @@ module AddressGeocoder
       raise NeedToOveride, 'success?'
     end
 
-    def failure(msg)
+    # Raise a connection error
+    def connection_error(msg)
       raise ConnectionError, msg
     end
   end

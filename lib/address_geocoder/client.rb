@@ -44,6 +44,7 @@ module AddressGeocoder
     def valid_address?
       check_country
       if values_changed?
+        reset_former_address
         call
         # @url_generator.generate_url
         # @requester.make_call
@@ -56,21 +57,19 @@ module AddressGeocoder
     # @return [Array<Hash>] a list of matching addresses
     def suggested_addresses
       check_country
-      call if values_changed?
+      if values_changed?
+        reset_former_address
+        call
+      end
       return false unless @requester.success?
       # 3. Initialize refined_address
       country_wo_postal = match_country.reject { |k| k == :postal_code }
       refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
       # 4. Pass refined address and google response to parser
-      parser = MapsApi::Google::Parser.new(@requester.result['results'][0]['address_components'], refined_address)
+      @parser.fields    = @requester.result['results'][0]['address_components']
+      @parser.addresses = refined_address
       # 5. return parsed google response as suggested address
-      parser.parse_google_response
-    end
-
-    # @abstract Abstract base method for initiating a call to a maps API
-    # @return [void]
-    def call
-      raise NeedToOveride, 'call'
+      @parser.parse_google_response
     end
 
     # @abstract Assigns the entered variables to their proper instance variables
@@ -85,7 +84,7 @@ module AddressGeocoder
     # @option args [String] :language (en) the language in which to return the address
     # @return [void]
     def assign_initial(args)
-      unless @url_generator && @requester # && @parser
+      unless @url_generator && @requester && @parser
         raise NeedToOveride, 'assign_initial'
       end
       Client.instance_methods(false).each do |var|
@@ -95,6 +94,18 @@ module AddressGeocoder
         next unless value
         instance_variable_set("@#{title}", value)
       end
+    end
+
+    # @abstract Abstract base method for resetting the former address
+    # @return [void]
+    def reset_former_address
+      raise NeedToOveride, 'reset_former_address'
+    end
+
+    # @abstract Abstract base method for initiating a call to a maps API
+    # @return [void]
+    def call
+      raise NeedToOveride, 'call'
     end
 
     private

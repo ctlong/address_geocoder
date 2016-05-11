@@ -13,11 +13,26 @@ module MapsApi
       # The call levels to cycle through when not using postal code
       CYCLEWITHNOPOSTAL = { all: 5, remove_street: 6, remove_city: 7 }.freeze
 
+      # Assigns the entered variables to their proper instance variables
+      # @param (see AddressGeocoder::Client#assign_initial)
+      # @return (see AddressGeocoder::Client#assign_initial)
+      def assign_initial(args)
+        @url_generator = UrlGenerator.new
+        @requester     = Requester.new
+        @parser        = Parser.new
+        super args
+      end
+
+      # @abstract Abstract base method for resetting the former address
+      # @return (see AddressGeocoder::Client#reset_former_address)
+      def reset_former_address
+        @former_address = { city: @city, street: @street, country: @country,
+                            postal_code: @postal_code, state: @state }
+      end
+
       # Initiates a call to GoogleMaps' Geocoding API
       # @return (see AddressGeocoder::Client#call)
       def call
-        @former_address = { city: @city, street: @street, country: @country,
-                            postal_code: @postal_code, state: @state }
         address = @former_address.dup
         address.delete(:street)
         address.delete(:city)  unless valid_city?
@@ -37,16 +52,6 @@ module MapsApi
             break
           end
         end
-      end
-
-      # Assigns the entered variables to their proper instance variables
-      # @param (see AddressGeocoder::Client#assign_initial)
-      # @return (see AddressGeocoder::Client#assign_initial)
-      def assign_initial(args)
-        @url_generator = UrlGenerator.new
-        @requester     = Requester.new
-        # @parser        = Parser.new
-        super args
       end
 
       private

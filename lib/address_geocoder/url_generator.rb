@@ -36,6 +36,9 @@ module AddressGeocoder
 
     private
 
+    # Translate a hash into a query string
+    # @param hash [Hash] the object to be transformed
+    # @return [String] a URL query
     def hash_to_query(hash)
       URI.encode_www_form(hash)
     end

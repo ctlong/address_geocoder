@@ -16,8 +16,8 @@ module MapsApi
       # @return (see AddressGeocoder::Client#suggested_addresses)
       def parse_google_response
         @fields.each { |field| parse_field(field) }
-        @suggested_address.delete(:switch)
-        @suggested_address
+        @addresses.delete(:switch)
+        @addresses
       end
 
       # Takes a specific field and converts it into our format
@@ -32,9 +32,9 @@ module MapsApi
         elsif contains?(['administrative_area_level_1'])
           matched_state(field['short_name'])
         elsif contains?(POSTAL_TYPES)
-          @suggested_address[:postal_code] = field['long_name']
+          @addresses[:postal_code] = field['long_name']
         elsif contains?(['route'])
-          @suggested_address[:street] = field['long_name']
+          @addresses[:street] = field['long_name']
         end
       end
 
@@ -62,24 +62,24 @@ module MapsApi
       end
 
       def matched_city(value)
-        if @suggested_address[:city]
-          @suggested_address[:state]  = value
-          @suggested_address[:switch] = true
+        if @addresses[:city]
+          @addresses[:state]  = value
+          @addresses[:switch] = true
         else
-          @suggested_address[:city] = value
+          @addresses[:city] = value
         end
       end
 
       def matched_state(value)
         if switched?
-          @suggested_address[:city]   = @suggested_address[:state]
-          @suggested_address[:switch] = false
+          @addresses[:city]   = @addresses[:state]
+          @addresses[:switch] = false
         end
-        @suggested_address[:state] = value
+        @addresses[:state] = value
       end
 
       def switched?
-        @suggested_address[:switch]
+        @addresses[:switch]
       end
     end
   end

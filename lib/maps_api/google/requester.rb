@@ -8,15 +8,20 @@ module MapsApi
       # @return [UrlGenerator] a class instance
       attr_writer :url_generator
 
+      # Make a call to Google Maps' Geocoding API
+      # @return (see AddressGeocoder::Requester#make_call)
       def make_call
         attempts = 0
-        @result = HTTParty.get(@url_generator.generate_url)
-      rescue
-        sleep(0.5)
-        attempts += 1
-        retry if attempts <= 5
-        failure('Could not connect to GoogleAPI')
+        begin
+          @result = HTTParty.get(@url_generator.generate_url)
+        rescue
+          sleep(0.5)
+          attempts += 1
+          retry if attempts <= 5
+          connection_error('Could not connect to GoogleAPI')
+        end
       end
+
       # Determines whether the request to Google Maps' Geocoding API was a
       # success
       # @return (see AddressGeocoder::Requester#success?)
