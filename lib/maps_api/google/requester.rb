@@ -1,4 +1,5 @@
 require 'address_geocoder/requester'
+require 'maps_api/google/url_generator'
 
 module MapsApi
   module Google

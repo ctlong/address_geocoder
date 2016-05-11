@@ -23,13 +23,6 @@ module MapsApi
         super args
       end
 
-      # @abstract Abstract base method for resetting the former address
-      # @return (see AddressGeocoder::Client#reset_former_address)
-      def reset_former_address
-        @former_address = { city: @city, street: @street, country: @country,
-                            postal_code: @postal_code, state: @state }
-      end
-
       # Initiates a call to GoogleMaps' Geocoding API
       # @return (see AddressGeocoder::Client#call)
       def call
@@ -40,9 +33,7 @@ module MapsApi
         @url_generator = UrlGenerator.new(address: address, api_key: @api_key,
                                           language: @language, street: @street)
         call_levels.each do |level_of_search|
-          # Set url
-          @url_generator.level   = level_of_search
-          @url_generator.address = address.dup
+          @url_generator.level = level_of_search
           # Make call to google
           @requester.url_generator = @url_generator
           @requester.make_call

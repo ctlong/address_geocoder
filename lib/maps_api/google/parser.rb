@@ -13,11 +13,11 @@ module MapsApi
 
       # Convert Google Maps' response into our format with the goal of finding
       # several matching addresses
-      # @return (see AddressGeocoder::Client#suggested_addresses)
-      def parse_google_response
+      # @return (see AddressGeocoder::Parser#parse_response)
+      def parse_response
         @fields.each { |field| parse_field(field) }
         @addresses.delete(:switch)
-        @addresses
+        [@addresses].flatten
       end
 
       # Takes a specific field and converts it into our format

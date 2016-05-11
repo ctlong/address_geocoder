@@ -28,9 +28,9 @@ module MapsApi
       # Generates a URL with which to call Google Maps' Geocoding API
       # @return (see AddressGeocoder::UrlGenerator#generate_url)
       def generate_url
-        prune
-        params = @address.map { |key, value| add(key, value) }
-        params = params.join
+        address = prune(@address.dup)
+        params  = address.map { |key, value| add(key, value) }
+        params  = params.join
         params.tr!('\=', ':')
         params.chop!
 
@@ -49,10 +49,11 @@ module MapsApi
 
       # Removes attributes from the address that don't fit with the level
       # @return [void]
-      def prune
-        @address.delete(:postal_code) if @level > 4
-        @address.delete(:city)        if ([3, 4, 7] & [@level]).any?
-        @address.delete(:state)       if @level == 4
+      def prune(address)
+        address.delete(:postal_code) if @level > 4
+        address.delete(:city)        if ([3, 4, 7] & [@level]).any?
+        address.delete(:state)       if @level == 4
+        address
       end
 
       # Parses a key and value from a hash into a query

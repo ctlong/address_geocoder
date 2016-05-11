@@ -1,3 +1,5 @@
+require 'address_geocoder/error'
+
 module AddressGeocoder
   # @abstract Abstract base class for parsing maps API responses
   class Parser
@@ -11,6 +13,12 @@ module AddressGeocoder
     def initialize(args = {})
       @addresses = args[:addresses]
       @fields    = args[:fields]
+    end
+
+    # @abstract Abstract base method for parsing maps API responses
+    # @return (see AddressGeocoder::Client#suggested_addresses)
+    def parse_response
+      raise NeedToOveride, 'parse_response'
     end
   end
 end

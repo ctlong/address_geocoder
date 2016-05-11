@@ -69,7 +69,7 @@ module AddressGeocoder
       @parser.fields    = @requester.result['results'][0]['address_components']
       @parser.addresses = refined_address
       # 5. return parsed google response as suggested address
-      @parser.parse_google_response
+      @parser.parse_response
     end
 
     # @abstract Assigns the entered variables to their proper instance variables
@@ -96,12 +96,6 @@ module AddressGeocoder
       end
     end
 
-    # @abstract Abstract base method for resetting the former address
-    # @return [void]
-    def reset_former_address
-      raise NeedToOveride, 'reset_former_address'
-    end
-
     # @abstract Abstract base method for initiating a call to a maps API
     # @return [void]
     def call
@@ -124,6 +118,13 @@ module AddressGeocoder
     # @return [Hash, nil] A country object, or nil if no country matched
     def match_country
       COUNTRIES[@country]
+    end
+
+    # Resets the former address to new data
+    # @return [void]
+    def reset_former_address
+      @former_address = { city: @city, street: @street, country: @country,
+                          postal_code: @postal_code, state: @state }
     end
 
     # Determines whether the inputted address values have changed in any way
