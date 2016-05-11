@@ -4,19 +4,25 @@ module MapsApi
   module Google
     # Class for parsing Google Maps API responses
     class Parser < ::AddressGeocoder::Parser
-      # Google's attribute title for cities
+      # List of Google's attribute title for cities
       CITY_TYPES   = %w(neighborhood locality sublocality).freeze
-      # Google's attribute titles for states
+      # List of Google's attribute titles for states
       STATE_TYPES  = %w(administrative_area_level_4 administrative_area_level_3 administrative_area_level_2).freeze
-      # Google's attribute titles for postal codes
+      # List of Google's attribute titles for postal codes
       POSTAL_TYPES = %w(postal_code postal_code_prefix).freeze
 
+      # Convert Google Maps' response into our format with the goal of finding
+      # several matching addresses
+      # @return (see AddressGeocoder::Client#suggested_addresses)
       def parse_google_response
         @fields.each { |field| parse_field(field) }
         @suggested_address.delete(:switch)
         @suggested_address
       end
 
+      # Takes a specific field and converts it into our format
+      # @param field [Hash] one particular field from Google Maps' response
+      # @return [void]
       def parse_field(field)
         @field = field
         if contains?(CITY_TYPES)
@@ -32,7 +38,10 @@ module MapsApi
         end
       end
 
+      # Determine whether a specific value should be present or not in Google
+      # Maps' response
       def self.value_present?(level, comparison_array, value)
+        # comparison_array.include?(level) && value
         ([level] & comparison_array).any? && value
       end
 
