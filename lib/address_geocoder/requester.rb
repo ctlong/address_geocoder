@@ -4,6 +4,15 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for making requests to maps APIs
   class Requester
+    # @!attribute [w] address
+    # @return [Hash] the address to use in the request
+    attr_writer :address
+    # @!attribute [w] language
+    # @return [Hash] the language to return the request in
+    attr_writer :language
+    # @!attribute [w] api_key
+    # @return [Hash] the api_key to use in the request
+    attr_writer :api_key
     # @!attribute [r] result
     # @return [Hash] the result of a request to a maps API
     attr_reader :result

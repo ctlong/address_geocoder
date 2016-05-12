@@ -43,7 +43,7 @@ module AddressGeocoder
       check_country
       if values_changed?
         reset_former_address
-        @requester.make_call(@former_address, @language, @api_key)
+        @requester.make_call
       end
       @requester.success? && @requester.certain?
     end
@@ -54,7 +54,7 @@ module AddressGeocoder
       check_country
       if values_changed?
         reset_former_address
-        @requester.make_call(@former_address.dup, @language, @api_key)
+        @requester.make_call
       end
       return false unless @requester.success?
       @requester.array_result.map do |result|
@@ -111,9 +111,13 @@ module AddressGeocoder
     # Resets the former address to new data
     # @return [void]
     def reset_former_address
-      @former_address = { city: @city, street: @street, country: match_country,
-                          postal_code: @postal_code, state: @state }
-      @parser.country = @matched_country.reject { |k| k == :postal_code }
+      @former_address     = { city: @city, street: @street,
+                              country: match_country, postal_code: @postal_code,
+                              state: @state }
+      @parser.country     = @matched_country.reject { |k| k == :postal_code }
+      @requester.address  = @former_address
+      @requester.language = @language
+      @requester.api_key  = @api_key
     end
 
     # Determines whether the inputted address values have changed in any way

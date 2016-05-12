@@ -9,21 +9,10 @@ module MapsApi
       # Include MapsApi methods and variables
       include MapsApi
 
-      # @!attribute url_generator
-      # @return [UrlGenerator] a class instance
-      attr_accessor :url_generator
-
       # Make a call to Google Maps' Geocoding API
       # @return (see AddressGeocoder::Requester#make_call)
-      def make_call(address, language, api_key)
-        @language = language
-        @api_key  = api_key
-        @address  = address.dup
-        address.delete(:street)
-        address.delete(:city)  unless valid_city?(@address[:city])
-        address.delete(:state) unless valid_state?(@address[:state])
-        @url_generator = UrlGenerator.new(address: address, api_key: @api_key,
-                                          language: @language, street: @address[:street])
+      def make_call
+        define_url_generator
         @url_generator.levels.each do |level_of_search|
           @url_generator.level = level_of_search
           # Make call to google
@@ -68,6 +57,18 @@ module MapsApi
 
       def array_result
         [@result['results']].flatten
+      end
+
+      private
+
+      def define_url_generator
+        address = @address.dup
+        address.delete(:street)
+        address.delete(:city)  unless valid_city?(@address[:city])
+        address.delete(:state) unless valid_state?(@address[:state])
+        @url_generator = UrlGenerator.new(address: address, api_key: @api_key,
+                                          language: @language,
+                                          street: @address[:street])
       end
     end
   end
