@@ -14,13 +14,6 @@ module MapsApi
         @parser        = Parser.new
         super args
       end
-
-      # Initiates a call to GoogleMaps' Geocoding API
-      # @return (see AddressGeocoder::Client#call)
-      def call
-        address = @former_address.dup
-        @requester.make_call(address, @language, @api_key)
-      end
     end
   end
 end

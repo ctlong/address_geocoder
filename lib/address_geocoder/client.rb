@@ -38,15 +38,14 @@ module AddressGeocoder
 
     # Determines whether an address is likely to be valid or not
     # @return [Boolean] true, or false if address is likely to be invalid
+    # @todo .certain? should be a parser method
     def valid_address?
       check_country
       if values_changed?
         reset_former_address
-        call
-        # @requester.make_call
+        @requester.make_call(@former_address.dup, @language, @api_key)
       end
       @requester.success? && @requester.certain?
-      # @requester.success? && @parser.certain?
     end
 
     # Gathers a list of matching addresses from the maps API
@@ -55,7 +54,7 @@ module AddressGeocoder
       check_country
       if values_changed?
         reset_former_address
-        call
+        @requester.make_call(@former_address.dup, @language, @api_key)
       end
       return false unless @requester.success?
       # 3. Initialize refined_address
@@ -80,9 +79,7 @@ module AddressGeocoder
     # @option args [String] :language (en) the language in which to return the address
     # @return [void]
     def assign_initial(args)
-      unless @requester && @parser
-        raise NeedToOveride, 'assign_initial'
-      end
+      raise NeedToOveride, 'assign_initial' unless @requester && @parser
       Client.instance_methods(false).each do |var|
         next if var.to_s[/\=/].nil?
         title = var.to_s.tr('=', '')
@@ -90,12 +87,6 @@ module AddressGeocoder
         next unless value
         instance_variable_set("@#{title}", value)
       end
-    end
-
-    # @abstract Abstract base method for initiating a call to a maps API
-    # @return [void]
-    def call
-      raise NeedToOveride, 'call'
     end
 
     private
@@ -114,7 +105,7 @@ module AddressGeocoder
     # @return [Hash, nil] A country object, or nil if no country matched
     def match_country
       @matched_country = COUNTRIES[@country]
-      @matched_country.merge!(alpha2: @country) if @matched_country
+      @matched_country[:alpha2] = @country if @matched_country
       @matched_country
     end
 
