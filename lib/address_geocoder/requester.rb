@@ -4,6 +4,9 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for making requests to maps APIs
   class Requester
+    # The regex used to check the state and city for validity
+    REGEX = /\A[a-zA-Z\ ]*\z/
+
     # @!attribute [r] result
     # @return [Hash] the result of a request to a maps API
     attr_reader :result

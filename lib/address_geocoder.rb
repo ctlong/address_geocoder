@@ -6,6 +6,4 @@ require 'maps_api'
 module AddressGeocoder
   # The collection of countries supported by this gem
   COUNTRIES = YAML.load_file('countries.yaml')
-  # The regex used to check the state and city for validity
-  REGEX = /\A[a-zA-Z\ ]*\z/
 end

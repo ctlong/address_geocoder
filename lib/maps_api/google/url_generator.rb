@@ -16,9 +16,9 @@ module MapsApi
       # @see https://developers.google.com/maps/faq#languagesupport
       LANGUAGES = ['zh-CN', 'ja', 'es', 'ko', 'ru', 'de', 'fr'].freeze
 
-      # @!attribute [w] level
+      # @!attribute level
       # @return [Integer] the level at which to generate the URL
-      attr_writer :level
+      attr_accessor :level
 
       def initialize(args = {})
         @level = args[:level]
@@ -50,6 +50,7 @@ module MapsApi
       # Removes attributes from the address that don't fit with the level
       # @return [void]
       def prune(address)
+        address[:country] = address[:country][:alpha2]
         address.delete(:postal_code) if @level > 4
         address.delete(:city)        if ([3, 4, 7] & [@level]).any?
         address.delete(:state)       if @level == 4

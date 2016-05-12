@@ -43,10 +43,9 @@ module AddressGeocoder
       if values_changed?
         reset_former_address
         call
-        # @url_generator.generate_url
         # @requester.make_call
       end
-      @requester.success? && @requester.result['certainty']
+      @requester.success? && @requester.certain?
       # @requester.success? && @parser.certain?
     end
 
@@ -60,7 +59,7 @@ module AddressGeocoder
       end
       return false unless @requester.success?
       # 3. Initialize refined_address
-      country_wo_postal = match_country.reject { |k| k == :postal_code }
+      country_wo_postal = @matched_country.reject { |k| k == :postal_code }
       refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
       # 4. Pass refined address and google response to parser
       @parser.fields    = @requester.result['results'][0]['address_components']
@@ -81,7 +80,7 @@ module AddressGeocoder
     # @option args [String] :language (en) the language in which to return the address
     # @return [void]
     def assign_initial(args)
-      unless @url_generator && @requester && @parser
+      unless @requester && @parser
         raise NeedToOveride, 'assign_initial'
       end
       Client.instance_methods(false).each do |var|
@@ -114,13 +113,15 @@ module AddressGeocoder
     # Attempts to match the given alpha2 to a country in the countries yaml
     # @return [Hash, nil] A country object, or nil if no country matched
     def match_country
-      COUNTRIES[@country]
+      @matched_country = COUNTRIES[@country]
+      @matched_country.merge!(alpha2: @country) if @matched_country
+      @matched_country
     end
 
     # Resets the former address to new data
     # @return [void]
     def reset_former_address
-      @former_address = { city: @city, street: @street, country: @country,
+      @former_address = { city: @city, street: @street, country: match_country,
                           postal_code: @postal_code, state: @state }
     end
 
@@ -133,39 +134,11 @@ module AddressGeocoder
       current_address = {
         city: @city,
         street: @street,
-        country: @country,
+        country: match_country,
         postal_code: @postal_code,
         state: @state
       }
       current_address != @former_address
-    end
-
-    # Determines whether the given city is valid or not
-    # @return [Boolean] true, or false if the city name does not pass the Regex
-    def valid_city?
-      @city && (@city[REGEX] != '')
-    end
-
-    # Determines whether the given state is valid or not
-    # @return [Boolean] true, or false if the state name does not pass the Regex
-    def valid_state?
-      @state && (@state[REGEX] != '')
-    end
-
-    # Determines whether the given postal code is valid or not
-    # @return [Boolean] true, or false if the postal code does not pass the
-    #   specs
-    def valid_postal_code?
-      # 1. Remove spaces
-      postal_code = @postal_code.to_s.tr(' ', '')
-      # 2. False if country does not have postal codes
-      return false unless match_country[:postal_code]
-      # 3. False if postal code length is not at least 4
-      return false if postal_code.length < 3
-      # 4. False if postal code is all one char (if that char isn't 1-9)
-      all_one_char = postal_code.tr(postal_code[0], '') == ''
-      return false if all_one_char && !(postal_code[0].to_i.in? Array(1..9))
-      true
     end
   end
 end
