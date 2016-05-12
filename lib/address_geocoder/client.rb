@@ -43,7 +43,7 @@ module AddressGeocoder
       check_country
       if values_changed?
         reset_former_address
-        @requester.make_call(@former_address.dup, @language, @api_key)
+        @requester.make_call(@former_address, @language, @api_key)
       end
       @requester.success? && @requester.certain?
     end

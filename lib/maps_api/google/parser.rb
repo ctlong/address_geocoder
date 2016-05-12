@@ -35,17 +35,6 @@ module MapsApi
       # @param field [Hash] one particular field from Google Maps' response
       # @return [void]
       def parse_field(field)
-        # if similar?(field['types'], CITY_TYPES)
-        #   matched_city(field['long_name'])
-        # elsif similar?(field['types'], STATE_TYPES)
-        #   matched_state(field['long_name'])
-        # elsif similar?(field['types'], ['administrative_area_level_1'])
-        #   matched_state(field['short_name'])
-        # elsif similar?(field['types'], POSTAL_TYPES)
-        #   @addresses[:postal_code] = field['long_name']
-        # elsif similar?(field['types'], ['route'])
-        #   @addresses[:street] = field['long_name']
-        # end
         [STREET_TYPES, CITY_TYPES, STATE_TYPES, POSTAL_TYPES].each do |type|
           if similar?(field['types'], type[:values])
             send("add_#{type[:name]}", field)
