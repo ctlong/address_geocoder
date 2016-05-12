@@ -11,6 +11,8 @@ module MapsApi
         city: 'locality',
         state: 'administrative_area'
       }.freeze
+      # The URL of Google Maps' Geocoding API
+      URL = 'https://maps.googleapis.com/maps/api/geocode/json?'.freeze
 
       # Google accepted language codes
       # @see https://developers.google.com/maps/faq#languagesupport
@@ -28,29 +30,29 @@ module MapsApi
       # Generates a URL with which to call Google Maps' Geocoding API
       # @return (see AddressGeocoder::UrlGenerator#generate_url)
       def generate_url
-        address = prune(@address.dup)
+        address = prune_address
         params  = address.map { |key, value| add(key, value) }
-        params  = params.join
-        params.tr!('\=', ':')
-        params.chop!
+        params  = params.join.tr('\=', ':').chop
 
         if ([1, 5] & [@level]).any?
           street = hash_to_query('address' => @street) + '&'
         end
-        params << "&key=#{@api_key}" unless @api_key.empty?
-        language = if @language && (LANGUAGES.include? @language)
-                     "&language=#{@language}"
-                   end
 
-        "https://maps.googleapis.com/maps/api/geocode/json?#{street}components=#{params}#{language}"
+        params << "&key=#{@api_key}" unless @api_key.empty?
+
+        language = "&language=#{@language}" if LANGUAGES.include? @language
+
+        "#{URL}#{street}components=#{params}#{language}"
       end
 
       private
 
       # Removes attributes from the address that don't fit with the level
       # @return [void]
-      def prune(address)
+      def prune_address
+        address           = @address.dup
         address[:country] = address[:country][:alpha2]
+
         address.delete(:postal_code) if @level > 4
         address.delete(:city)        if ([3, 4, 7] & [@level]).any?
         address.delete(:state)       if @level == 4
