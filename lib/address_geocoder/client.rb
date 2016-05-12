@@ -57,14 +57,13 @@ module AddressGeocoder
         @requester.make_call(@former_address.dup, @language, @api_key)
       end
       return false unless @requester.success?
-      # 3. Initialize refined_address
-      country_wo_postal = @matched_country.reject { |k| k == :postal_code }
-      refined_address = { country: country_wo_postal, city: nil, state: nil, postal_code: nil, street: nil }
-      # 4. Pass refined address and google response to parser
-      @parser.fields    = @requester.result['results'][0]['address_components']
-      @parser.addresses = refined_address
-      # 5. return parsed google response as suggested address
-      @parser.parse_response
+      @requester.array_result.map do |result|
+        @parser.fields = result
+        @parser.parse_response
+      end
+      # unless Client.instance_methods(false).include?(:suggested_addresses)
+      #   raise NeedToOveride, 'suggested_addresses'
+      # end
     end
 
     # @abstract Assigns the entered variables to their proper instance variables
@@ -114,6 +113,7 @@ module AddressGeocoder
     def reset_former_address
       @former_address = { city: @city, street: @street, country: match_country,
                           postal_code: @postal_code, state: @state }
+      @parser.country = @matched_country.reject { |k| k == :postal_code }
     end
 
     # Determines whether the inputted address values have changed in any way

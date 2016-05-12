@@ -61,9 +61,13 @@ module MapsApi
         # False if had valid state but level didn't include state
         return false if Parser.value_present?(level, [4], valid_state?(@address[:state]))
         # False if had valid postal code but level didn't include postal code
-        return false if Parser.value_present?(level, [5, 6, 7], valid_postal_code?(@address[:postal_code], @address[:country]))
+        return false if Parser.value_present?(level, [5, 6, 7], valid_postal_code?(@address[:postal_code]))
         # Else true
         true
+      end
+
+      def array_result
+        [@result['results']].flatten
       end
     end
   end

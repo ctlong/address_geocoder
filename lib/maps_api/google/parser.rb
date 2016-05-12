@@ -23,12 +23,10 @@ module MapsApi
       # several matching addresses
       # @return (see AddressGeocoder::Parser#parse_response)
       def parse_response
-        @fields.each do |field|
+        @fields['address_components'].each do |field|
           parse_field(field)
         end
-        @addresses.delete(:switch)
-        @addresses = [@addresses].flatten
-        @addresses
+        define_address
       end
 
       # Takes a specific field and converts it into our format
@@ -52,28 +50,33 @@ module MapsApi
         google_response['results'][0]['address_components'].count == 1
       end
 
-      def self.correct_country?(google_response, country)
+      def self.correct_country?(google_response)
         components = google_response['results']
         components = components[0]['address_components']
-        (components.select { |x| x['short_name'] == country }).any?
+        (components.select { |x| x['short_name'] == @country[:alpha2] }).any?
       end
 
       private
+
+      def define_address
+        { country: @country, city: @city, state: @state,
+          postal_code: @postal_code, street: @street }
+      end
 
       def similar?(array1, array2)
         (array1 & array2).any?
       end
 
       def add_street(field)
-        @addresses[:street] = field['long_name']
+        @street = field['long_name']
       end
 
       def add_city(field)
-        if @addresses[:city]
-          @addresses[:state]  = field['long_name']
-          @addresses[:switch] = true
+        if @city
+          @state  = field['long_name']
+          @switch = true
         else
-          @addresses[:city] = field['long_name']
+          @city = field['long_name']
         end
       end
 
@@ -83,15 +86,15 @@ module MapsApi
               else
                 'long_name'
               end
-        if @addresses[:switch]
-          @addresses[:city]   = @addresses[:state]
-          @addresses[:switch] = false
+        if @switch
+          @city   = @state
+          @switch = false
         end
-        @addresses[:state] = field[str]
+        @state = field[str]
       end
 
       def add_postal_code(field)
-        @addresses[:postal_code] = field['long_name']
+        @postal_code = field['long_name']
       end
     end
   end
