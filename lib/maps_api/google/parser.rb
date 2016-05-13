@@ -42,15 +42,15 @@ module MapsApi
 
       # Determine whether a specific value should be present or not in Google
       # Maps' response
-      def self.value_present?(level, comparison_array, value)
+      def value_present?(level, comparison_array, value)
         comparison_array.include?(level) && value
       end
 
-      def self.just_country?(google_response)
+      def just_country?(google_response)
         google_response['results'][0]['address_components'].count == 1
       end
 
-      def self.correct_country?(google_response)
+      def correct_country?(google_response)
         components = google_response['results']
         components = components[0]['address_components']
         (components.select { |x| x['short_name'] == @country[:alpha2] }).any?

@@ -42,15 +42,15 @@ module MapsApi
       def certain?
         level = @url_generator.level
         # False if only returned country
-        return false if Parser.just_country?(@result)
+        return false if @parser.just_country?(@result)
         # False if country is not inputted country
-        return false if !Parser.correct_country?(@result, @address[:country][:alpha2])
+        return false if !@parser.correct_country?(@result)
         # False if had valid city but level didn't include city
-        return false if Parser.value_present?(level, [3, 4, 7], valid_city?(@address[:city]))
+        return false if @parser.value_present?(level, [3, 4, 7], valid_city?(@address[:city]))
         # False if had valid state but level didn't include state
-        return false if Parser.value_present?(level, [4], valid_state?(@address[:state]))
+        return false if @parser.value_present?(level, [4], valid_state?(@address[:state]))
         # False if had valid postal code but level didn't include postal code
-        return false if Parser.value_present?(level, [5, 6, 7], valid_postal_code?(@address[:postal_code]))
+        return false if @parser.value_present?(level, [5, 6, 7], valid_postal_code?(@address[:postal_code], @address[:country]))
         # Else true
         true
       end

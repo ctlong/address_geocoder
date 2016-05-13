@@ -4,6 +4,9 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for making requests to maps APIs
   class Requester
+    # @!attribute [w] parser
+    # @return [Parser] a class instance
+    attr_writer :parser
     # @!attribute [w] address
     # @return [Hash] the address to use in the request
     attr_writer :address
@@ -17,7 +20,8 @@ module AddressGeocoder
     # @return [Hash] the result of a request to a maps API
     attr_reader :result
 
-    def initialize
+    def initialize(args = {})
+      @parser = args[:parser]
     end
 
     # Make a call to a maps API

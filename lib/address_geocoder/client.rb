@@ -42,7 +42,7 @@ module AddressGeocoder
     def valid_address?
       check_country
       if values_changed?
-        reset_former_address
+        reset
         @requester.make_call
       end
       @requester.success? && @requester.certain?
@@ -53,7 +53,7 @@ module AddressGeocoder
     def suggested_addresses
       check_country
       if values_changed?
-        reset_former_address
+        reset
         @requester.make_call
       end
       return false unless @requester.success?
@@ -75,7 +75,8 @@ module AddressGeocoder
     # @option args [String] :postal_code the postal code of the address to be
     #   validated
     # @option args [String] :street the street of the address to be validated
-    # @option args [String] :language (en) the language in which to return the address
+    # @option args [String] :language (en) the language in which to return the
+    #   address
     # @return [void]
     def assign_initial(args)
       raise NeedToOveride, 'assign_initial' unless @requester && @parser
@@ -110,7 +111,7 @@ module AddressGeocoder
 
     # Resets the former address to new data
     # @return [void]
-    def reset_former_address
+    def reset
       @former_address     = { city: @city, street: @street,
                               country: match_country, postal_code: @postal_code,
                               state: @state }

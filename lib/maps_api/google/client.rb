@@ -1,6 +1,6 @@
 require 'address_geocoder/client'
-require 'maps_api/google/requester'
 require 'maps_api/google/parser'
+require 'maps_api/google/requester'
 
 module MapsApi
   module Google
@@ -10,8 +10,8 @@ module MapsApi
       # @param (see AddressGeocoder::Client#assign_initial)
       # @return (see AddressGeocoder::Client#assign_initial)
       def assign_initial(args)
-        @requester = Requester.new
         @parser    = Parser.new
+        @requester = Requester.new(parser: @parser)
         super args
       end
     end
