@@ -4,10 +4,6 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for generatoring URLs to call maps APIs
   class UrlGenerator
-    # @!attribute street
-    # @return (see AddressGeocoder::Client#street)
-    attr_accessor :street
-
     # @!attribute api_key
     # @return (see AddressGeocoder::Client#api_key)
     attr_accessor :api_key
@@ -21,7 +17,6 @@ module AddressGeocoder
     attr_accessor :address
 
     def initialize(args = {})
-      @street   = args[:street]
       @api_key  = args[:api_key]
       @language = args[:language]
       @address  = args[:address]

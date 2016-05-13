@@ -3,28 +3,16 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for interacting with maps APIs
   class Client
-    # @!attribute country
-    # @return [String, Hash] a country's alpha2 or a country object from
-    #   the yaml
-    attr_accessor :country
     # @!attribute api_key
     # @return [String] the user's key to the chosen maps API
     attr_accessor :api_key
-    # @!attribute state
-    # @return [String] the state of the address to be validated
-    attr_accessor :state
-    # @!attribute city
-    # @return [String] the city of the address to be validated
-    attr_accessor :city
-    # @!attribute postal_code
-    # @return [String] the postal code of the address to be validated
-    attr_accessor :postal_code
-    # @!attribute street
-    # @return [String] the street of the address to be validated
-    attr_accessor :street
     # @!attribute language
     # @return [String] the language in which to return the address
     attr_accessor :language
+    # @!attribute [r] address
+    # @return [Hash] our address object. It contains country, state, city,
+    #   postal code, and street.
+    attr_reader :address
     # @!attribute [r] response
     # @return [Hash] the response from the maps API
     attr_reader :response
@@ -33,6 +21,7 @@ module AddressGeocoder
     attr_reader :former_address
 
     def initialize(args = {})
+      @address = {}
       assign_initial(args)
     end
 
@@ -82,11 +71,35 @@ module AddressGeocoder
       raise NeedToOveride, 'assign_initial' unless @requester && @parser
       Client.instance_methods(false).each do |var|
         next if var.to_s[/\=/].nil?
-        title = var.to_s.tr('=', '')
-        value = args[title.to_sym].to_s
+        value = args[var.to_s.tr('=', '').to_sym].to_s
         next unless value
-        instance_variable_set("@#{title}", value)
+        send(var, value)
       end
+    end
+
+    def country=(str)
+      @address[:country]          = COUNTRIES[str]
+      @address[:country][:alpha2] = str if @address[:country]
+    end
+
+    def state=(str)
+      @address.delete(:state)
+      @address[:state] = simple_check_and_assign!(str)
+    end
+
+    def city=(str)
+      @address.delete(:city)
+      @address[:city] = simple_check_and_assign!(str)
+    end
+
+    def postal_code=(str)
+      @address.delete(:postal_code)
+      @address[:postal_code] = pc_check_and_assign!(str)
+    end
+
+    def street=(str)
+      @address[:street] = nil
+      @address[:street] = str unless str.empty?
     end
 
     private
@@ -96,27 +109,15 @@ module AddressGeocoder
     #   match any country in the yaml
     # @return [void]
     def check_country
-      unless @country && @country[/\A[a-zA-Z]{2}\z/] && match_country
-        raise ArgumentError, 'Invalid country'
-      end
-    end
-
-    # Attempts to match the given alpha2 to a country in the countries yaml
-    # @return [Hash, nil] A country object, or nil if no country matched
-    def match_country
-      @matched_country = COUNTRIES[@country]
-      @matched_country[:alpha2] = @country if @matched_country
-      @matched_country
+      raise ArgumentError, 'Invalid country' unless @address[:country]
     end
 
     # Resets the former address to new data
     # @return [void]
     def reset
-      @former_address     = { city: @city, street: @street,
-                              country: match_country, postal_code: @postal_code,
-                              state: @state }
-      @parser.country     = @matched_country.reject { |k| k == :postal_code }
-      @requester.address  = @former_address
+      @former_address     = @address
+      @parser.country     = @address[:country]
+      @requester.address  = @address
       @requester.language = @language
       @requester.api_key  = @api_key
     end
@@ -127,14 +128,29 @@ module AddressGeocoder
     # maps API was last called
     def values_changed?
       return true unless @response
-      current_address = {
-        city: @city,
-        street: @street,
-        country: match_country,
-        postal_code: @postal_code,
-        state: @state
-      }
-      current_address != @former_address
+      @address != @former_address
+    end
+
+    # Determines whether the given state is valid or not
+    # @return [Boolean] true, or false if the state name does not pass the Regex
+    def simple_check_and_assign!(var)
+      var if var.to_s[REGEX] != ''
+    end
+
+    # Determines whether the given postal code is valid or not
+    # @return [Boolean] true, or false if the postal code does not pass the
+    #   specs
+    def pc_check_and_assign!(postal_code)
+      # 1. Remove spaces
+      pc = postal_code.to_s.tr(' ', '')
+      # 2. False if country does not have postal codes
+      return nil unless @address[:country][:has_postal_code]
+      # 3. False if postal code length is not at least 4
+      return nil if pc.length < 3
+      # 4. False if postal code is all one char (if that char isn't 1-9)
+      all_one_char = pc.tr(pc[0], '') == ''
+      return nil if all_one_char && !(pc[0].to_i.in? Array(1..9))
+      pc
     end
   end
 end

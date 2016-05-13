@@ -4,9 +4,6 @@ module MapsApi
   module Google
     # Class for generatoring URLs to call Google Maps API
     class UrlGenerator < ::AddressGeocoder::UrlGenerator
-      # Include MapsApi methods and variables
-      include MapsApi
-
       # Google's attribute names for our address variables
       GOOGLE_TITLES = {
         country: 'country',
@@ -56,12 +53,12 @@ module MapsApi
       def levels
         levels  = []
         # Assign base levels unless no street
-        levels += CYCLE[:base]      unless @street.empty?
+        levels += CYCLE[:base]      if @address[:street]
         # Assign levels that don't use street if valid city
-        levels += CYCLE[:no_street] if valid_city?(@address[:city])
+        levels += CYCLE[:no_street] if @address[:city]
         # Assign levels that don't use street,city if valid state
-        levels += CYCLE[:no_city]   if valid_state?(@address[:state])
-        if valid_postal_code?(@address[:postal_code], @address[:country])
+        levels += CYCLE[:no_city]   if @address[:state]
+        if @address[:postal_code]
           # Assign the level that doesn't use street,city,state
           levels += CYCLE[:no_state]
         else
@@ -76,8 +73,9 @@ module MapsApi
       # Removes attributes from the address that don't fit with the level
       # @return [Hash] an address object to add to the call
       def prune_address
-        address           = @address.dup
+        address           = (@address.select { |_k, v| v }).to_h
         address[:country] = address[:country][:alpha2]
+        @street           = address.delete(:street)
 
         address.delete(:postal_code) if @level > 4
         address.delete(:city)        if ([3, 4, 7] & [@level]).any?
