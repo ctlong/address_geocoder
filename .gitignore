@@ -2,7 +2,7 @@
 lib/.DS_Store
 .env
 /tmp/
-# /Gemfile.lock
+/Gemfile.lock
 /.bundle/
 
 # RSpec
