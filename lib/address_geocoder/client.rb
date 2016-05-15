@@ -116,7 +116,7 @@ module AddressGeocoder
     # @return [void]
     def reset
       @former_address     = @address
-      @parser.country     = @address[:country]
+      @parser.address     = @address
       @requester.address  = @address
       @requester.language = @language
       @requester.api_key  = @api_key

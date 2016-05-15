@@ -3,15 +3,15 @@ require 'address_geocoder/error'
 module AddressGeocoder
   # @abstract Abstract base class for parsing maps API responses
   class Parser
-    # @!attribute country
-    # @return [Hash] a country object from the yaml
-    attr_writer :country
+    # @!attribute [w] address
+    # @return [Hash] an address object
+    attr_writer :address
     # @!attribute [w] fields
     # @return [Hash] a maps API response
     attr_writer :fields
 
     def initialize(args = {})
-      @country = args[:country]
+      @address = args[:address]
       @fields  = args[:fields]
     end
 

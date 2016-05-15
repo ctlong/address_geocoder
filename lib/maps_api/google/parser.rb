@@ -40,26 +40,46 @@ module MapsApi
         end
       end
 
-      # Determine whether a specific value should be present or not in Google
-      # Maps' response
-      def value_present?(level, comparison_array, value)
-        comparison_array.include?(level) && value
+      # Check to see if the city should have been used in the call, and if so,
+      # was it?
+      # @return [Boolean] true, or false if the city should have been used but
+      # wasn't or vice versa
+      def city_present?(level)
+        [3, 4, 7].include?(level) && @address[:city]
+      end
+
+      # Check to see if the state should have been used in the call, and if so,
+      # was it?
+      # @return [Boolean] true, or false if the state should have been used but
+      # wasn't or vice versa
+      def state_present?(level)
+        4 == level && @address[:state]
+      end
+
+      # Check to see if the postal code should have been used in the call, and
+      # if so, was it?
+      # @return [Boolean] true, or false if the postal code should have been
+      # used but wasn't or vice versa
+      def pc_present?(level)
+        [5, 6, 7].include?(level) && @address[:postal_code]
       end
 
       def just_country?(google_response)
         google_response['results'][0]['address_components'].count == 1
       end
 
-      def correct_country?(google_response)
+      def not_correct_country?(google_response)
         components = google_response['results']
         components = components[0]['address_components']
-        (components.select { |x| x['short_name'] == @country[:alpha2] }).any?
+        !(components.select do |x|
+          x['short_name'] == @address[:country][:alpha2]
+        end).any?
       end
 
       private
 
       def define_address
-        { country: @country, city: @city, state: @state,
+        { country: @address[:country], city: @city, state: @state,
           postal_code: @postal_code, street: @street }
       end
 
