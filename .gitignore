@@ -1,12 +1,19 @@
 .DS_Store
 lib/.DS_Store
 .env
+/tmp/
+# /Gemfile.lock
+/.bundle/
 
 # RSpec
 .rspec
 /log
 /tmp
+/pkg/
+/coverage/
+/spec/reports/
 
 # Yardoc
 /.yardoc
+/_yardoc/
 /doc
