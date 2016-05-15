@@ -26,7 +26,7 @@ module AddressGeocoder
     end
 
     # Determines whether an address is likely to be valid or not
-    # @return [Boolean] true, or false if address is likely to be invalid
+    # @return [Boolean] true, or false if address is likely to be invalid.
     # @todo .certain? should be a parser method
     def valid_address?
       check_country
@@ -50,9 +50,6 @@ module AddressGeocoder
         @parser.fields = result
         @parser.parse_response
       end
-      # unless Client.instance_methods(false).include?(:suggested_addresses)
-      #   raise NeedToOveride, 'suggested_addresses'
-      # end
     end
 
     # @abstract Assigns the entered variables to their proper instance variables
@@ -77,23 +74,43 @@ module AddressGeocoder
       end
     end
 
+    # Matches the given alpha2 to a yaml country and assigns it to the address
+    # object
+    # @param str [String] a country's alpha2
+    # @return [Hash, nil] a country object from the yaml, or nil if the provided
+    #   alpha2 could not be matched.
     def country=(str)
-      @address[:country]          = COUNTRIES[str]
-      @address[:country][:alpha2] = str if @address[:country]
+      if COUNTRIES[str]
+        @address[:country]          = COUNTRIES[str]
+        @address[:country][:alpha2] = str
+      else
+        @address[:country] = nil
+      end
+      @address[:country]
     end
 
+    # Assigns the given state to the address object if it passes verification
+    # @param str [String] a state name
+    # @return [String, nil] the entered state, or nil if the provided string
+    #   could not be verified.
     def state=(str)
-      @address.delete(:state)
       @address[:state] = simple_check_and_assign!(str)
     end
 
+    # Assigns the given city to the address object if it passes verification
+    # @param str [String] a city name
+    # @return [String, nil] the entered city, or nil if the provided string
+    #   could not be verified.
     def city=(str)
-      @address.delete(:city)
       @address[:city] = simple_check_and_assign!(str)
     end
 
+    # Assigns the given postal code to the address object if it passes
+    # verification
+    # @param str [String] a postal code
+    # @return [String, nil] the entered postal code, or nil if the provided
+    #   string could not be verified.
     def postal_code=(str)
-      @address.delete(:postal_code)
       @address[:postal_code] = pc_check_and_assign!(str)
     end
 
@@ -124,31 +141,33 @@ module AddressGeocoder
 
     # Determines whether the inputted address values have changed in any way
     # @return [Boolean] true, or false if nothing has been called or the
-    # current address information does not match the information from when the
-    # maps API was last called
+    #   current address information does not match the information from when the
+    #   maps API was last called
     def values_changed?
       return true unless @response
       @address != @former_address
     end
 
-    # Determines whether the given state is valid or not
-    # @return [Boolean] true, or false if the state name does not pass the Regex
+    # Determines whether the given city/state is valid or not
+    # @param var [String] a city/state name
+    # @return [String, nil] the given city/state, or false if it does not pass
+    #   the Regex
     def simple_check_and_assign!(var)
       var if var.to_s[REGEX] != ''
     end
 
     # Determines whether the given postal code is valid or not
-    # @return [Boolean] true, or false if the postal code does not pass the
-    #   specs
+    # @note validations include checking length, whether or not the given
+    #   country has a postal code, and checking to make sure the postal code is
+    #   not all one letter or all 0.
+    # @param postal_code [String, Integer] a postal code
+    # @return [String, nil] the given postal code as a string, or nil if it is
+    #   not valid.
     def pc_check_and_assign!(postal_code)
-      # 1. Remove spaces
       pc = postal_code.to_s.tr(' ', '')
-      # 2. False if country does not have postal codes
-      return nil unless @address[:country][:has_postal_code]
-      # 3. False if postal code length is not at least 4
+      return nil unless @address.fetch(:country).fetch(:has_postal_code)
       return nil if pc.length < 3
-      # 4. False if postal code is all one char (if that char isn't 1-9)
-      all_one_char = pc.tr(pc[0], '') == ''
+      all_one_char = pc.delete(pc[0]) == ''
       return nil if all_one_char && !(pc[0].to_i.in? Array(1..9))
       pc
     end

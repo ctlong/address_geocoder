@@ -24,16 +24,24 @@ module AddressGeocoder
       @parser = args[:parser]
     end
 
-    # Make a call to a maps API
+    # @abstract Abstract base method for initiating a call to a maps API
     # @return [void]
     def make_call
       raise NeedToOveride, 'make_call'
     end
 
-    # @abstract Abstract base method for initiating a call to a maps API
+    # @abstract Abstract base method for checking if a call to a maps API
+    #   suceeded
     # @return [Boolean] true, or false if the request failed
     def success?
       raise NeedToOveride, 'success?'
+    end
+
+    # @abstract Abstract base method for returning a compacted, flattened array
+    #   of different address responses.
+    # @return (see AddressGeocoder::Requester#array_result)
+    def array_result
+      [@result['results']].flatten
     end
 
     # Raise a connection error

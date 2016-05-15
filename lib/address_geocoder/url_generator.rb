@@ -3,6 +3,8 @@ require 'address_geocoder/error'
 
 module AddressGeocoder
   # @abstract Abstract base class for generatoring URLs to call maps APIs
+  # @todo If not other apis need this class then maybe this should be a map api
+  #   specific class (ie. might not need an abstract base class).
   class UrlGenerator
     # @!attribute api_key
     # @return (see AddressGeocoder::Client#api_key)

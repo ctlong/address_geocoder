@@ -14,17 +14,7 @@ module MapsApi
                                           language: @language)
         @url_generator.levels.each do |level_of_search|
           @url_generator.level = level_of_search
-          # Make call to google
-          attempts = 0
-          begin
-            @result = HTTParty.get(@url_generator.generate_url)
-          rescue
-            sleep(0.5)
-            attempts += 1
-            retry if attempts <= 5
-            connection_error('Could not connect to GoogleAPI')
-          end
-          # If the address succeeded:
+          call
           break if success?
         end
       end
@@ -38,25 +28,41 @@ module MapsApi
         true
       end
 
+      # Check if the certainty level of the response
+      # @note certainty is determined in two ways: first, by ensuring that the
+      #   country was not the only field returned and that it was the correct
+      #   country; second, that the city, state, and postal code were all
+      #   present in the response if they were included in the level of call.
       def certain?
         level = @url_generator.level
-        # False if only returned country
-        return false if @parser.just_country?(@result) ||
-                        # False if country is not inputted country
-                        @parser.not_correct_country?(@result) ||
-                        # False if had valid city but level didn't include city
-                        @parser.city_present?(level) ||
-                        # False if had valid state but level didn't include
-                        # state
-                        @parser.state_present?(level) ||
-                        # False if had valid postal code but level didn't
-                        # include postal code
-                        @parser.pc_present?(level)
-        true
+        if @parser.just_country?(@result) ||
+           @parser.not_correct_country?(@result)
+          false
+        elsif @parser.city_present?(level) || @parser.state_present?(level) ||
+              @parser.pc_present?(level)
+          false
+        else
+          true
+        end
       end
 
+      # Return a compacted, flattened array of different address responses.
       def array_result
         [@result['results']].flatten
+      end
+
+      private
+
+      def call
+        attempts = 0
+        begin
+          @result = HTTParty.get(@url_generator.generate_url)
+        rescue
+          sleep(0.5)
+          attempts += 1
+          retry if attempts <= 5
+          connection_error('Could not connect to GoogleAPI')
+        end
       end
     end
   end
