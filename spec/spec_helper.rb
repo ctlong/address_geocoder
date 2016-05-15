@@ -1,13 +1,10 @@
+$LOAD_PATH << '../lib'
 require 'address_geocoder'
 require 'pry'
 
 RSpec::Expectations.configuration.warn_about_potential_false_positives = false
-RSpec.configure do |config|
-  # Use color in STDOUT
-  config.color = true
-end
 
-# set environment variable form .env
+# set environment variable from .env
 lines = File.read '.env'
 lines = lines.split('\n')
 lines.each do |line|
