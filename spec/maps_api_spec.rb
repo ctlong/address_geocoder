@@ -1,0 +1,2 @@
+describe MapsApi do
+end
