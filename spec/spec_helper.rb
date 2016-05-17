@@ -1,6 +1,5 @@
 $LOAD_PATH << '../lib'
 require 'address_geocoder'
-require 'maps_api'
 require 'pry'
 
 RSpec::Expectations.configuration.warn_about_potential_false_positives = false
