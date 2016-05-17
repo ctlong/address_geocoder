@@ -1,2 +1,2 @@
-describe MapsApi do
+RSpec.describe MapsApi do
 end
