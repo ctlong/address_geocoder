@@ -114,6 +114,11 @@ module AddressGeocoder
       @address[:postal_code] = pc_check_and_assign!(str)
     end
 
+    # Assigns the given street to the address object if it passes
+    # verification
+    # @param str [String] a street
+    # @return [String, nil] the entered street, or nil if the provided
+    #   string was empty.
     def street=(str)
       @address[:street] = nil
       @address[:street] = str unless str.empty?
