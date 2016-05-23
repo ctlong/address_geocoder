@@ -47,6 +47,7 @@ module MapsApi
       end
 
       # Return a compacted, flattened array of different address responses.
+      # @return (see AddressGeocoder::Requester#array_result)
       def array_result
         [@result['results']].flatten
       end

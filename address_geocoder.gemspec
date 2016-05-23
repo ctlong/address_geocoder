@@ -4,10 +4,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'address_geocoder/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'address_geocoder'
-  s.version     = AddressGeocoder::VERSION
-  s.authors     = ['Carson Long', 'Wing Leung Choi']
-  s.email       = ['ctlong.970@gmail.com', 'wingleungchoi@gmail.com']
+  s.name    = 'address_geocoder'
+  s.version = AddressGeocoder::VERSION
+  s.authors = ['Carson Long', 'Wing Leung Choi']
+  s.email   = ['ctlong.970@gmail.com', 'wingleungchoi@gmail.com']
 
   s.summary     = 'Address validation and geocoding'
   s.description = 'Calls and parses Google Geocoding API for address validation and geocoding'

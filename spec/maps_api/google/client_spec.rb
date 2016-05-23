@@ -1,4 +1,4 @@
-describe MapsApi::Google::Client do
+RSpec.describe MapsApi::Google::Client do
   describe 'when initialized' do
     it 'should have attr accessors' do
       address_geocoder = MapsApi::Google::Client.new(api_key: '12345', country: 'US', state: 'CO', street: '301 First St.', city: 'Crested Butte', postal_code: '10022')

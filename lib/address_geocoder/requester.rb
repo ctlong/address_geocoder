@@ -32,14 +32,14 @@ module AddressGeocoder
 
     # @abstract Abstract base method for checking if a call to a maps API
     #   suceeded
-    # @return [Boolean] true, or false if the request failed
+    # @return [Boolean] true, or false if the request failed.
     def success?
       raise NeedToOveride, 'success?'
     end
 
     # @abstract Abstract base method for returning a compacted, flattened array
     #   of different address responses.
-    # @return (see AddressGeocoder::Requester#array_result)
+    # @return [Array<Hash>] a collection of possible addresses
     def array_result
       [@result['results']].flatten
     end
