@@ -1,18 +1,11 @@
-== AddressGeocoder
+= AddressGeocoder
 
 {<img src="https://codeclimate.com/github/ctlong/address_geocoder/badges/gpa.svg" />}[https://codeclimate.com/github/ctlong/address_geocoder]
 {<img src="https://travis-ci.org/ctlong/address_geocoder.svg?branch=master" />}[https://travis-ci.org/ctlong/address_geocoder.svg?branch=master]
 
-AddressGeocoder is a gem allowing you to validate and geocode addresses. All validations are done using {Google's Geocoding API}[https://developers.google.com/maps/documentation/geocoding/intro].
-Although an {API key}[https://developers.google.com/maps/documentation/geocoding/get-api-key] is not required, it is recommended to track usage and upgrade your call limit if required.
-Google provides a maximum of 2,000 calls per day to either your IP address or API key.
+<b>AddressGeocoder</b> is a Ruby interface to certain Maps APIs that allow you to validate and geocode addresses.
 
-== Information
-
-=== Bug reporting
-
-If you discover a problem with our gem, please let us know about it:
-https://github.com/ctlong/address_geocoder/issues
+Some APIs may require certain credentials to access.
 
 == Getting started
 
@@ -22,17 +15,58 @@ AddressGeocoder was written and tested on Rails >= 4.2.5. You can install it by 
 
 Run the bundle command to install it.
 
-=== Basic usage
+== Basic usage
 
-Not activated yet :)
+Require the library:
 
-=== How it works
+  require 'address_geocoder'
 
-Gem sends addresses in varying formats to the Google Geocoding API.
-A positive response indicates that the address is valid.
-After a positive response gem can parse returned elements to suggest a formatted address.
+Create a client:
 
-=== Development and tests
+  client = MapsApi::Google::Client.new
 
-We are open to suggestions and improvements.
-Just don't forget to write tests before the pull request.
+You can set some or all of the address information when or after creating the client (country names are {ISO 3166-1 Alpha-2}[https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2] codes):
+
+  client = MapsApi::Google::Client.new(
+    country: 'Your country',
+    state: 'Your state',
+    city: 'Your city',
+    postal_code: 'Your postal code',
+    street: 'Your street',
+    language: 'The language to return your response in',
+    api_key: 'Your api key for an API'
+  )
+
+  client.street = 'A different street'
+
+Validating an address:
+
+  client.valid_address? # returns true or false
+
+Finding suggested addresses:
+
+  client.suggested_addresses # returns a list of addresses that most closely match your inputted addresss
+
+Additional methods:
+
+  client.response       # returns the marketplace's actual response
+  client.address        # returns the current user inputted address
+  client.former_address # returns the last address that was used in a call, nil if no call has been made.
+
+== The APIs
+
+=== Google
+
+Currently the only API we have integrated. All validations are done using {Google's Geocoding API}[https://developers.google.com/maps/documentation/geocoding/intro]. Although an {API key}[https://developers.google.com/maps/documentation/geocoding/get-api-key] is not required, it is recommended to track usage and upgrade your call limit if required. Google provides a maximum of 2,000 free calls per day to either your IP address or API key.
+
+== How it works
+
+<b>AddressGeocoder</b> sends addresses in varying formats to the Maps API of your choice. A positive response indicates that the address is valid. After a positive response the gem can parse returned elements to suggest a formatted address.
+
+== Development and tests
+
+We are open to suggestions and improvements. Just don't forget to write tests before the pull request.
+
+== Bug reporting
+
+If you discover a problem with our gem, please let us know about it: {ctlong/address_geocoder/issues}[https://github.com/ctlong/address_geocoder/issues]
