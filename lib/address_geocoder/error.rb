@@ -11,7 +11,7 @@ module AddressGeocoder
     end
 
     def message
-      msg = 'This Method Needs To Be Overrided'
+      msg = 'This Method Needs To Be Overridden'
       @msg ? "#{msg}: #{@msg}" : msg
     end
   end
