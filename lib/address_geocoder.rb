@@ -7,5 +7,6 @@ module AddressGeocoder
   # The collection of countries supported by this gem
   COUNTRIES = YAML.load_file('countries.yaml')
   # The regex used to check the state and city for validity
+  # @todo evaluate usefullness given special characters
   REGEX = /\A[a-zA-Z\ ]*\z/
 end

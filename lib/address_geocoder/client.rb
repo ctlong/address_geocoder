@@ -69,7 +69,7 @@ module AddressGeocoder
       Client.instance_methods(false).each do |var|
         next if var.to_s[/\=/].nil?
         value = args[var.to_s.tr('=', '').to_sym].to_s
-        next unless value
+        next if value.empty?
         send(var, value)
       end
     end
@@ -158,7 +158,8 @@ module AddressGeocoder
     # @return [String, nil] the given city/state, or false if it does not pass
     #   the Regex
     def simple_check_and_assign!(var)
-      var if var.to_s[REGEX] != ''
+      return var if var.to_s[REGEX] != ''
+      nil
     end
 
     # Determines whether the given postal code is valid or not
