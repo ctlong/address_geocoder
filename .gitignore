@@ -1,15 +1,15 @@
 .DS_Store
-lib/.DS_Store
+/lib/.DS_Store
 .env
 /tmp/
 /Gemfile.lock
 /.bundle/
+/tmp
+/pkg/
+/log
 
 # RSpec
 .rspec
-/log
-/tmp
-/pkg/
 /coverage/
 /spec/reports/
 
