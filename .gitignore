@@ -17,3 +17,7 @@ lib/.DS_Store
 /.yardoc
 /_yardoc/
 /doc
+
+# RVM
+.ruby-gemset
+.ruby-version
