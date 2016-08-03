@@ -17,3 +17,7 @@
 /.yardoc
 /_yardoc/
 /doc
+
+# RVM
+.ruby-gemset
+.ruby-version

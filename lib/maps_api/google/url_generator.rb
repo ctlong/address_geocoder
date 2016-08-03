@@ -39,7 +39,7 @@ module MapsApi
           street = hash_to_query('address' => @street) + '&'
         end
 
-        params << "&key=#{@api_key}" unless @api_key.empty?
+        params << "&key=#{@api_key}" if @api_key
 
         language = "&language=#{@language}" if LANGUAGES.include? @language
 
